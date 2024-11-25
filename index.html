@@ -1,45 +1,83 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Merchant Onboarding</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <!-- Home Screen -->
-  <div id="home-screen" class="screen">
-    <h1>MY Menu</h1>
-    <h2>New Merchant Onboarding</h2>
-    <form id="onboarding-form">
-      <input type="text" id="name" placeholder="Name" required>
-      <input type="text" id="phone" placeholder="Phone" required>
-      <div id="scan-qr" class="button">Scan QR</div>
-      <button id="submit-button" type="submit">Set QR</button>
-    </form>
-  </div>
+// Elements
+const homeScreen = document.getElementById("home-screen");
+const thankYouScreen = document.getElementById("thank-you-screen");
+const scanQRButton = document.getElementById("scan-qr");
+const form = document.getElementById("onboarding-form");
+const errorMessage = document.getElementById("error-message"); // Inline error message element
 
-  <!-- Popup Error -->
-  <div id="error-popup" class="popup hidden">
-    <div class="popup-content">
-      <span id="close-popup" class="close">&times;</span>
-      <h2>Invalid QR</h2>
-      <p>Please Try Again</p>
-      <div class="popup-buttons">
-        <button id="retry-button">Retry</button>
-        <button id="cancel-button">Cancel</button>
-      </div>
-    </div>
-  </div>
+// Global variable to track QR scan
+let qrCodeData = null; // Initially null, meaning no QR code is scanned
 
-  <!-- Thank You Screen -->
-  <div id="thank-you-screen" class="screen hidden">
-    <h1>MY Menu</h1>
-    <h2>Merchant QR Booked</h2>
-    <h3>Thank You</h3>
-    <button id="back-home-button">Back to Home</button>
-  </div>
+// Mock function to simulate QR scanning
+function scanQRCode() {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const success = Math.random() > 0.2; // 80% chance of success
+      success ? resolve("QR123456") : reject("Invalid QR Code");
+    }, 1000);
+  });
+}
 
-  <script src="script.js"></script>
-</body>
-</html>
+// Mock API call function
+function sendToAPI(data) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      const success = Math.random() > 0.2; // 80% chance of success
+      success ? resolve("API Success") : reject("API Error");
+    }, 1000);
+  });
+}
+
+// Event: Scan QR button
+scanQRButton.addEventListener("click", async () => {
+  try {
+    qrCodeData = await scanQRCode(); // Attempt to scan QR
+    alert(`QR Scanned: ${qrCodeData}`); // Notify user
+    scanQRButton.textContent = "QR Scanned!";
+    scanQRButton.style.backgroundColor = "#34a853"; // Indicate success
+    errorMessage.textContent = ""; // Clear any previous error
+  } catch (error) {
+    errorMessage.textContent = "Error: " + error; // Show error message
+    errorMessage.style.color = "red";
+  }
+});
+
+// Event: Form submission
+form.addEventListener("submit", async (event) => {
+  event.preventDefault(); // Prevent default form submission
+
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+
+  // Check if the QR code is scanned
+  if (!qrCodeData) {
+    errorMessage.textContent = "Error: Please scan the QR code before submitting.";
+    errorMessage.style.color = "red"; // Display error in red text
+    return;
+  }
+
+  try {
+    const response = await sendToAPI({ name, phone, qrCode: qrCodeData }); // Simulate API call
+    console.log(response);
+    showThankYouScreen(); // Show success screen if API call succeeds
+  } catch (error) {
+    errorMessage.textContent = "Error: " + error; // Show error message
+    errorMessage.style.color = "red";
+  }
+});
+
+// Show Thank You screen
+function showThankYouScreen() {
+  homeScreen.classList.add("hidden"); // Hide home screen
+  thankYouScreen.classList.remove("hidden"); // Show thank-you screen
+}
+
+// Reset to Home screen
+function resetToHome() {
+  qrCodeData = null; // Reset QR data
+  scanQRButton.textContent = "Scan QR";
+  scanQRButton.style.backgroundColor = "#fbbc04"; // Reset button style
+  thankYouScreen.classList.add("hidden"); // Hide thank-you screen
+  homeScreen.classList.remove("hidden"); // Show home screen
+  errorMessage.textContent = ""; // Clear error message
+}

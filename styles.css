@@ -82,3 +82,11 @@ button:hover {
   font-size: 20px;
   cursor: pointer;
 }
+#error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+.hidden {
+  display: none;
+}

@@ -1,13 +1,9 @@
 // Elements
 const homeScreen = document.getElementById("home-screen");
 const thankYouScreen = document.getElementById("thank-you-screen");
-const errorPopup = document.getElementById("error-popup");
-const closePopup = document.getElementById("close-popup");
-const retryButton = document.getElementById("retry-button");
-const cancelButton = document.getElementById("cancel-button");
-const backHomeButton = document.getElementById("back-home-button");
 const scanQRButton = document.getElementById("scan-qr");
 const form = document.getElementById("onboarding-form");
+const errorMessage = document.getElementById("error-message"); // Inline error message element
 
 // Global variable to track QR scan
 let qrCodeData = null; // Initially null, meaning no QR code is scanned
@@ -39,8 +35,10 @@ scanQRButton.addEventListener("click", async () => {
     alert(`QR Scanned: ${qrCodeData}`); // Notify user
     scanQRButton.textContent = "QR Scanned!";
     scanQRButton.style.backgroundColor = "#34a853"; // Indicate success
+    errorMessage.textContent = ""; // Clear any previous error
   } catch (error) {
-    showErrorPopup(error); // Show error if QR scan fails
+    errorMessage.textContent = "Error: " + error; // Show error message
+    errorMessage.style.color = "red";
   }
 });
 
@@ -53,7 +51,8 @@ form.addEventListener("submit", async (event) => {
 
   // Check if the QR code is scanned
   if (!qrCodeData) {
-    showErrorPopup("Please scan the QR code before submitting."); // Show error popup
+    errorMessage.textContent = "Error: Please scan the QR code before submitting.";
+    errorMessage.style.color = "red"; // Display error in red text
     return;
   }
 
@@ -62,21 +61,10 @@ form.addEventListener("submit", async (event) => {
     console.log(response);
     showThankYouScreen(); // Show success screen if API call succeeds
   } catch (error) {
-    showErrorPopup(error); // Show error popup if API call fails
+    errorMessage.textContent = "Error: " + error; // Show error message
+    errorMessage.style.color = "red";
   }
 });
-
-// Show error popup
-function showErrorPopup(message) {
-  const popupMessage = errorPopup.querySelector("h2");
-  popupMessage.innerText = message; // Update error message dynamically
-  errorPopup.classList.remove("hidden"); // Show popup
-}
-
-// Hide error popup
-function hideErrorPopup() {
-  errorPopup.classList.add("hidden"); // Hide popup
-}
 
 // Show Thank You screen
 function showThankYouScreen() {
@@ -91,16 +79,5 @@ function resetToHome() {
   scanQRButton.style.backgroundColor = "#fbbc04"; // Reset button style
   thankYouScreen.classList.add("hidden"); // Hide thank-you screen
   homeScreen.classList.remove("hidden"); // Show home screen
+  errorMessage.textContent = ""; // Clear error message
 }
-
-// Event: Close popup
-closePopup.addEventListener("click", hideErrorPopup);
-
-// Event: Retry button
-retryButton.addEventListener("click", hideErrorPopup);
-
-// Event: Cancel button
-cancelButton.addEventListener("click", hideErrorPopup);
-
-// Event: Back to home button
-backHomeButton.addEventListener("click", resetToHome);
