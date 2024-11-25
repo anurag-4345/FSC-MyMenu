@@ -1,17 +1,10 @@
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
+  text-align: center;
   background-color: #34a853;
   color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-}
-
-.screen {
-  text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
 .hidden {
@@ -19,74 +12,56 @@ body {
 }
 
 form {
-  margin-top: 20px;
+  margin: 20px;
 }
 
 input {
   display: block;
+  width: 80%;
   margin: 10px auto;
   padding: 10px;
-  width: 80%;
-  max-width: 300px;
-  border: none;
   border-radius: 5px;
-  background-color: #a8d5a7;
+  border: none;
+  font-size: 16px;
 }
 
-.button,
 button {
+  display: inline-block;
   padding: 10px 20px;
-  background-color: #fbbc04;
-  color: white;
+  margin: 10px;
+  font-size: 16px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  margin: 10px auto;
-  display: inline-block;
 }
 
-.button:hover,
-button:hover {
-  background-color: #ffa500;
+#scan-qr {
+  background-color: #fbbc04;
+  color: #000;
 }
 
-.popup {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+#close-camera,
+#back-home-button {
+  background-color: #4285f4;
+  color: white;
 }
 
-.popup-content {
-  background: white;
-  color: black;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 300px;
-}
-
-.popup-buttons button {
-  margin: 10px;
-}
-
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 20px;
-  cursor: pointer;
-}
 #error-message {
-  color: red;
-  font-size: 14px;
   margin-top: 10px;
+  color: red;
+  font-weight: bold;
 }
-.hidden {
-  display: none;
+
+#camera-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#thank-you-screen h1 {
+  font-size: 2rem;
+}
+
+#thank-you-screen button {
+  background-color: #fbbc04;
+  color: #000;
 }
