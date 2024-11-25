@@ -14,23 +14,22 @@ let qrCodeData = null;
 // Initialize the QR scanner
 let html5QrCode = null;
 
-// Show the camera container and start QR code scanning
+// Function to start QR scanner
 function startQRScanner() {
   cameraContainer.classList.remove("hidden"); // Show camera container
   qrCodeData = null; // Reset QR code data
 
-  // Initialize the html5-qrcode scanner
   if (!html5QrCode) {
-    html5QrCode = new Html5Qrcode("qr-reader"); // Use the `qr-reader` div for the camera feed
+    html5QrCode = new Html5Qrcode("qr-reader");
   }
 
-  // Start scanning with the camera
+  // Start scanning
   html5QrCode
     .start(
       { facingMode: "environment" }, // Use the back camera
       {
         fps: 10, // Frames per second
-        qrbox: 250, // Set scanning box size
+        qrbox: { width: 250, height: 250 }, // Scanning box
       },
       (decodedText) => {
         // Success callback
@@ -38,7 +37,6 @@ function startQRScanner() {
         alert(`QR Code Scanned: ${decodedText}`);
         scanQRButton.textContent = "QR Scanned!";
         scanQRButton.style.backgroundColor = "#34a853"; // Indicate success
-        errorMessage.textContent = ""; // Clear any previous error
         stopQRScanner(); // Stop the scanner after a successful scan
       },
       (errorMessage) => {
@@ -47,16 +45,23 @@ function startQRScanner() {
     )
     .catch((err) => {
       console.error(`Error starting QR scanner: ${err}`);
+      showError("Camera access denied or unavailable.");
     });
 }
 
-// Stop the QR scanner and hide the camera container
+// Function to stop the QR scanner
 function stopQRScanner() {
   if (html5QrCode) {
     html5QrCode.stop().then(() => {
       cameraContainer.classList.add("hidden"); // Hide camera container
     });
   }
+}
+
+// Function to show error messages
+function showError(message) {
+  errorMessage.textContent = message;
+  errorMessage.style.color = "red";
 }
 
 // Event: Click "Scan QR" button
@@ -76,10 +81,8 @@ form.addEventListener("submit", async (event) => {
   const name = document.getElementById("name").value;
   const phone = document.getElementById("phone").value;
 
-  // Check if the QR code is scanned
   if (!qrCodeData) {
-    errorMessage.textContent = "Error: Please scan the QR code before submitting.";
-    errorMessage.style.color = "red"; // Display error in red text
+    showError("Error: Please scan the QR code before submitting.");
     return;
   }
 
@@ -87,14 +90,13 @@ form.addEventListener("submit", async (event) => {
     // Simulate API call
     const response = await sendToAPI({ name, phone, qrCode: qrCodeData });
     console.log(response);
-    showThankYouScreen(); // Show success screen if API call succeeds
+    showThankYouScreen();
   } catch (error) {
-    errorMessage.textContent = "Error: " + error; // Show error message
-    errorMessage.style.color = "red";
+    showError("Error submitting data. Please try again.");
   }
 });
 
-// Mock API call function
+// Mock API call
 function sendToAPI(data) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -106,19 +108,19 @@ function sendToAPI(data) {
 
 // Show Thank You screen
 function showThankYouScreen() {
-  homeScreen.classList.add("hidden"); // Hide home screen
-  thankYouScreen.classList.remove("hidden"); // Show thank-you screen
+  homeScreen.classList.add("hidden");
+  thankYouScreen.classList.remove("hidden");
 }
 
 // Reset to Home screen
 function resetToHome() {
-  qrCodeData = null; // Reset QR data
+  qrCodeData = null;
   scanQRButton.textContent = "Scan QR";
-  scanQRButton.style.backgroundColor = "#fbbc04"; // Reset button style
-  thankYouScreen.classList.add("hidden"); // Hide thank-you screen
-  homeScreen.classList.remove("hidden"); // Show home screen
-  errorMessage.textContent = ""; // Clear error message
+  scanQRButton.style.backgroundColor = "#fbbc04";
+  thankYouScreen.classList.add("hidden");
+  homeScreen.classList.remove("hidden");
+  errorMessage.textContent = "";
 }
 
-// Event: Back to home button
+// Event: Back to Home button
 document.getElementById("back-home-button").addEventListener("click", resetToHome);
