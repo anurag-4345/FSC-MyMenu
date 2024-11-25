@@ -3,33 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Merchant Onboarding</title>
+  <title>QR Code Scanner</title>
   <link rel="stylesheet" href="styles.css">
   <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
 </head>
 <body>
-  <div id="home-screen">
-    <form id="onboarding-form">
-      <h1>MY Menu</h1>
-      <h2>New Merchant Onboarding</h2>
-      <input type="text" id="name" placeholder="Name" required />
-      <input type="tel" id="phone" placeholder="Phone" required />
-      <button type="button" id="scan-qr">Scan QR</button>
-      <div id="camera-container" class="hidden">
-        <div id="qr-reader" style="width: 300px; margin: 20px auto;"></div>
-        <button type="button" id="close-camera">Close Camera</button>
-      </div>
-      <div id="error-message"></div>
-      <button type="submit">Set QR</button>
-    </form>
+  <div id="app">
+    <h1>QR Code Scanner</h1>
+    <div id="qr-reader-container">
+      <button id="start-scan">Start QR Scan</button>
+      <div id="qr-reader" class="hidden" style="width: 300px; margin: 20px auto;"></div>
+      <button id="stop-scan" class="hidden">Stop Scan</button>
+      <p id="scan-result" class="hidden">Scan Result: <span id="result-text"></span></p>
+    </div>
+    <p id="error-message" class="error"></p>
   </div>
-
-  <div id="thank-you-screen" class="hidden">
-    <h1>Merchant QR Booked</h1>
-    <h2>Thank You</h2>
-    <button id="back-home-button">Back to Home</button>
-  </div>
-
   <script src="script.js"></script>
 </body>
 </html>

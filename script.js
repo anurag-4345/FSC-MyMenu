@@ -1,60 +1,57 @@
 // Elements
-const homeScreen = document.getElementById("home-screen");
-const thankYouScreen = document.getElementById("thank-you-screen");
-const scanQRButton = document.getElementById("scan-qr");
-const closeCameraButton = document.getElementById("close-camera");
-const cameraContainer = document.getElementById("camera-container");
+const startScanButton = document.getElementById("start-scan");
+const stopScanButton = document.getElementById("stop-scan");
 const qrReaderDiv = document.getElementById("qr-reader");
-const form = document.getElementById("onboarding-form");
+const scanResultDiv = document.getElementById("scan-result");
+const resultText = document.getElementById("result-text");
 const errorMessage = document.getElementById("error-message");
 
-// Global variable to store QR code data
-let qrCodeData = null;
-
-// Initialize QR Code scanner
+// QR Code Scanner Instance
 let html5QrCode = null;
 
-// Function to start QR scanning
+// Function to start the QR code scanner
 function startQRScanner() {
-  qrCodeData = null;
-  cameraContainer.classList.remove("hidden"); // Show the camera container
+  errorMessage.textContent = ""; // Clear error messages
+  scanResultDiv.classList.add("hidden"); // Hide the result section
 
-  // Initialize the QR scanner
+  // Ensure the library is loaded and camera permissions are requested
   if (!html5QrCode) {
     html5QrCode = new Html5Qrcode("qr-reader");
   }
 
-  // Start scanning
+  qrReaderDiv.classList.remove("hidden");
+  stopScanButton.classList.remove("hidden");
+  startScanButton.classList.add("hidden");
+
   html5QrCode
     .start(
-      { facingMode: "environment" }, // Back camera
-      {
-        fps: 10,
-        qrbox: { width: 250, height: 250 },
-      },
+      { facingMode: "environment" }, // Use the back camera
+      { fps: 10, qrbox: { width: 250, height: 250 } },
       (decodedText) => {
-        // Success callback
-        qrCodeData = decodedText;
-        alert(`QR Code Scanned: ${decodedText}`);
-        scanQRButton.textContent = "QR Scanned!";
-        scanQRButton.style.backgroundColor = "#34a853";
-        stopQRScanner(); // Stop after successful scan
+        // On successful scan
+        resultText.textContent = decodedText;
+        scanResultDiv.classList.remove("hidden");
+        stopQRScanner();
       },
       (error) => {
-        console.error("QR Scan Error:", error); // Optional error handling
+        // Scanning errors
+        console.warn("QR Scan Error:", error);
       }
     )
     .catch((err) => {
       console.error("Error starting QR scanner:", err);
-      showError("Camera access is required to scan QR codes.");
+      showError("Camera access is denied or unavailable. Ensure your browser has camera permissions.");
+      stopQRScanner();
     });
 }
 
-// Function to stop QR scanning
+// Function to stop the QR code scanner
 function stopQRScanner() {
   if (html5QrCode) {
     html5QrCode.stop().then(() => {
-      cameraContainer.classList.add("hidden"); // Hide the camera container
+      qrReaderDiv.classList.add("hidden");
+      stopScanButton.classList.add("hidden");
+      startScanButton.classList.remove("hidden");
     });
   }
 }
@@ -64,62 +61,6 @@ function showError(message) {
   errorMessage.textContent = message;
 }
 
-// Handle form submission
-form.addEventListener("submit", async (event) => {
-  event.preventDefault();
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-
-  if (!qrCodeData) {
-    showError("Please scan a QR code before submitting.");
-    return;
-  }
-
-  // Simulate API call
-  try {
-    const response = await sendToAPI({ name, phone, qrCode: qrCodeData });
-    console.log(response);
-    showThankYouScreen();
-  } catch (error) {
-    showError("Failed to submit the data. Please try again.");
-  }
-});
-
-// Simulated API call
-function sendToAPI(data) {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const success = Math.random() > 0.2; // 80% success rate
-      success ? resolve("API Success") : reject("API Error");
-    }, 1000);
-  });
-}
-
-// Show the thank you screen
-function showThankYouScreen() {
-  homeScreen.classList.add("hidden");
-  thankYouScreen.classList.remove("hidden");
-}
-
-// Reset to home screen
-function resetToHome() {
-  qrCodeData = null;
-  scanQRButton.textContent = "Scan QR";
-  scanQRButton.style.backgroundColor = "#fbbc04"
-  thankYouScreen.classList.add("hidden");
-  homeScreen.classList.remove("hidden");
-  errorMessage.textContent = "";
-}
-
-// Back to home button
-document.getElementById("back-home-button").addEventListener("click", resetToHome);
-
-// QR button event listener
-scanQRButton.addEventListener("click", () => {
-  startQRScanner();
-});
-
-// Close camera button
-closeCameraButton.addEventListener("click", () => {
-  stopQRScanner();
-});
+// Event Listeners
+startScanButton.addEventListener("click", startQRScanner);
+stopScanButton.addEventListener("click", stopQRScanner);
