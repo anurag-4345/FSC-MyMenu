@@ -3,10 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Scanner</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"> </script>
- 
- <style>
+  <title>Enhanced QR Code Scanner</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
+  <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
@@ -20,9 +19,18 @@
       margin: 20px auto;
     }
 
+    input {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+      width: 80%;
+      max-width: 300px;
+    }
+
     button {
       padding: 10px 20px;
       font-size: 16px;
+      margin: 10px;
       background-color: #007BFF;
       color: white;
       border: none;
@@ -30,9 +38,22 @@
       cursor: pointer;
     }
 
-    #result {
+    #json-display {
       margin-top: 20px;
-      font-size: 18px;
+      font-size: 16px;
+      color: #333;
+      background: #eee;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: left;
+      display: inline-block;
+    }
+
+    #result, #error {
+      margin-top: 10px;
+    }
+
+    #result {
       color: green;
     }
 
@@ -43,26 +64,35 @@
   </style>
 </head>
 <body>
-  <h1>QR Code Scanner</h1>
+  <h1>Enhanced QR Code Scanner</h1>
+  <input id="name-field" type="text" placeholder="Enter your name">
+  <input id="phone-field" type="text" placeholder="Enter your phone number">
   <div id="qr-reader"></div>
+  <button id="flip-camera">Flip Camera</button>
   <p id="result">Scan a QR code to see its URL.</p>
   <p id="error"></p>
+  <div id="json-display"></div>
   <button id="stop-scan" style="display: none;">Stop Scan</button>
 
   <script>
     const qrReaderDiv = document.getElementById("qr-reader");
+    const nameField = document.getElementById("name-field");
+    const phoneField = document.getElementById("phone-field");
     const resultDisplay = document.getElementById("result");
     const errorDisplay = document.getElementById("error");
+    const jsonDisplay = document.getElementById("json-display");
+    const flipCameraButton = document.getElementById("flip-camera");
     const stopScanButton = document.getElementById("stop-scan");
 
     let qrScanner;
+    let currentFacingMode = "environment"; // Default to back camera
 
     function startQRScanner() {
       qrScanner = new Html5Qrcode("qr-reader");
 
       qrScanner
         .start(
-          { facingMode: "environment" }, // Back camera
+          { facingMode: currentFacingMode },
           {
             fps: 10, // Frames per second
             qrbox: { width: 250, height: 250 }, // Scanner box dimensions
@@ -71,8 +101,24 @@
             // On successful scan
             resultDisplay.textContent = `Decoded URL: ${decodedText}`;
             errorDisplay.textContent = "";
+
+            // Collect input data
+            const name = nameField.value.trim();
+            const phone = phoneField.value.trim();
+
+            // Create JSON object
+            const data = {
+              name: name || "N/A",
+              phone: phone || "N/A",
+              qrCodeURL: decodedText,
+            };
+
+            // Display JSON
+            jsonDisplay.textContent = JSON.stringify(data, null, 2);
+
+            // Stop scanning
+            qrScanner.stop();
             stopScanButton.style.display = "none";
-            qrScanner.stop(); // Automatically stop after a successful scan
           },
           (error) => {
             // Handle scanning errors
@@ -80,7 +126,7 @@
           }
         )
         .then(() => {
-          stopScanButton.style.display = "block"; // Show stop button if scanning starts
+          stopScanButton.style.display = "block";
         })
         .catch((err) => {
           errorDisplay.textContent = `Failed to start QR scanner: ${err}`;
@@ -96,11 +142,19 @@
       }
     }
 
-    // Automatically start the scanner on page load
+    function flipCamera() {
+      currentFacingMode =
+        currentFacingMode === "environment" ? "user" : "environment";
+      stopQRScanner();
+      startQRScanner();
+    }
+
+    // Start scanner on page load
     window.onload = startQRScanner;
 
-    // Stop scanning on button click
+    // Event listeners
     stopScanButton.addEventListener("click", stopQRScanner);
+    flipCameraButton.addEventListener("click", flipCamera);
   </script>
 </body>
 </html>
