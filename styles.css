@@ -177,27 +177,35 @@ button:disabled {
   background-color: #28a745;
 }
 
-#user-info-table {
-  margin-top: 30px;
-  width: 80%;
-  max-width: 400px;
-  text-align: left;
+#merchant-popup {
+  display: none;
   padding: 20px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 10px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-}
-
-th {
   background-color: #f1f1f1;
+  border-radius: 8px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  text-align: center;
+}
+
+#merchant-details {
+  margin: 10px 0;
+  font-size: 16px;
+}
+
+#merchant-popup button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #FF0000;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+#merchant-popup button:hover {
+  background-color: #cc0000;
 }
