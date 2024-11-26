@@ -3,8 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open Camera</title>
-  <style>
+  <title>QR Code Scanner</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"> </script>
+ 
+ <style>
     body {
       font-family: Arial, sans-serif;
       text-align: center;
@@ -13,12 +15,9 @@
       padding: 20px;
     }
 
-    video {
-      width: 100%;
-      max-width: 600px;
+    #qr-reader {
+      width: 300px;
       margin: 20px auto;
-      border: 2px solid #333;
-      border-radius: 10px;
     }
 
     button {
@@ -31,35 +30,77 @@
       cursor: pointer;
     }
 
-    button:disabled {
-      background-color: #999;
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+    }
+
+    #error {
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Camera App</h1>
-  <video id="camera" autoplay playsinline></video>
-  <button id="start-camera">Open Camera</button>
-  <p id="error-message" style="color: red;"></p>
+  <h1>QR Code Scanner</h1>
+  <div id="qr-reader"></div>
+  <p id="result">Scan a QR code to see its URL.</p>
+  <p id="error"></p>
+  <button id="stop-scan" style="display: none;">Stop Scan</button>
 
   <script>
-    const startCameraButton = document.getElementById("start-camera");
-    const cameraVideo = document.getElementById("camera");
-    const errorMessage = document.getElementById("error-message");
+    const qrReaderDiv = document.getElementById("qr-reader");
+    const resultDisplay = document.getElementById("result");
+    const errorDisplay = document.getElementById("error");
+    const stopScanButton = document.getElementById("stop-scan");
 
-    startCameraButton.addEventListener("click", async () => {
-      errorMessage.textContent = ""; // Clear any error messages
+    let qrScanner;
 
-      try {
-        // Request access to the camera
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        cameraVideo.srcObject = stream; // Attach the camera stream to the video element
-        startCameraButton.disabled = true; // Disable the button after starting the camera
-      } catch (error) {
-        console.error("Error accessing camera:", error);
-        errorMessage.textContent = "Unable to access the camera. Please check permissions.";
+    function startQRScanner() {
+      qrScanner = new Html5Qrcode("qr-reader");
+
+      qrScanner
+        .start(
+          { facingMode: "environment" }, // Back camera
+          {
+            fps: 10, // Frames per second
+            qrbox: { width: 250, height: 250 }, // Scanner box dimensions
+          },
+          (decodedText) => {
+            // On successful scan
+            resultDisplay.textContent = `Decoded URL: ${decodedText}`;
+            errorDisplay.textContent = "";
+            stopScanButton.style.display = "none";
+            qrScanner.stop(); // Automatically stop after a successful scan
+          },
+          (error) => {
+            // Handle scanning errors
+            errorDisplay.textContent = `Scanning error: ${error}`;
+          }
+        )
+        .then(() => {
+          stopScanButton.style.display = "block"; // Show stop button if scanning starts
+        })
+        .catch((err) => {
+          errorDisplay.textContent = `Failed to start QR scanner: ${err}`;
+        });
+    }
+
+    function stopQRScanner() {
+      if (qrScanner) {
+        qrScanner.stop().then(() => {
+          resultDisplay.textContent = "Scanner stopped.";
+          stopScanButton.style.display = "none";
+        });
       }
-    });
+    }
+
+    // Automatically start the scanner on page load
+    window.onload = startQRScanner;
+
+    // Stop scanning on button click
+    stopScanButton.addEventListener("click", stopQRScanner);
   </script>
 </body>
 </html>
