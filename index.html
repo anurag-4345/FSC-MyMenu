@@ -3,40 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Scanner with Wikipedia Validation</title>
+  <title>My-Menu QR Scanner</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f4f4f4;
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      box-sizing: border-box;
     }
 
-    #qr-reader {
-      width: 300px;
-      margin: 20px auto;
-      display: none; /* Hidden until camera is opened */
+    h1 {
+      color: #007BFF;
+      margin-bottom: 20px;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .input-container {
+      margin-bottom: 20px;
+      width: 80%;
+      max-width: 400px;
+      text-align: center;
     }
 
     input {
-      padding: 10px;
+      padding: 12px;
       font-size: 16px;
-      margin: 10px;
-      width: 80%;
-      max-width: 300px;
+      margin: 8px 0;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .button-container {
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      margin-top: 20px;
     }
 
     button {
-      padding: 10px 20px;
+      padding: 12px 20px;
       font-size: 16px;
-      margin: 10px;
       background-color: #007BFF;
       color: white;
       border: none;
       border-radius: 5px;
+      width: 100%;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
     }
 
     button:disabled {
@@ -44,19 +72,30 @@
       cursor: not-allowed;
     }
 
+    #qr-reader {
+      margin-top: 30px;
+      width: 300px;
+      height: 300px;
+      display: none; /* Hidden until camera is opened */
+      border-radius: 10px;
+    }
+
     #json-display {
       margin-top: 20px;
+      background: #f0f0f0;
+      padding: 15px;
+      border-radius: 5px;
+      width: 80%;
+      max-width: 400px;
       font-size: 16px;
       color: #333;
-      background: #eee;
-      padding: 10px;
-      border-radius: 5px;
       text-align: left;
-      display: inline-block;
     }
 
     #result, #error {
       margin-top: 10px;
+      font-size: 18px;
+      font-weight: bold;
     }
 
     #result {
@@ -65,7 +104,6 @@
 
     #error {
       color: red;
-      font-weight: bold;
     }
 
     #popup {
@@ -76,44 +114,66 @@
       transform: translate(-50%, -50%);
       padding: 20px;
       background: white;
-      border: 1px solid red;
+      border: 2px solid #FF0000;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
       text-align: center;
+      border-radius: 8px;
+      z-index: 1000;
+      max-width: 300px;
     }
 
     #popup p {
       margin: 0;
+      font-size: 16px;
+      color: #333;
     }
 
     #popup button {
+      margin-top: 10px;
+      padding: 10px 20px;
       background-color: #FF0000;
       color: white;
       border: none;
-      padding: 10px 20px;
       border-radius: 5px;
       cursor: pointer;
+      font-size: 16px;
     }
 
     #popup button:hover {
       background-color: #cc0000;
     }
+
+    #flip-camera {
+      margin-top: 20px;
+      background-color: #28a745;
+      color: white;
+    }
   </style>
 </head>
 <body>
-  <h1>Enhanced QR Code Scanner</h1>
-  <input id="name-field" type="text" placeholder="Enter your name">
-  <input id="phone-field" type="number" placeholder="Enter your 10-digit phone number">
-  <button id="open-camera" disabled>Open Camera</button>
-  <button id="flip-camera" style="display: none;">Flip Camera</button>
+  <h1>My-Menu QR Scanner</h1>
+  <div class="input-container">
+    <input id="name-field" type="text" placeholder="Enter your name" />
+    <input id="phone-field" type="number" placeholder="Enter your 10-digit phone number" />
+  </div>
+
+  <div class="button-container">
+    <button id="open-camera" disabled>Open Camera</button>
+    <button id="flip-camera" style="display: none;">Flip Camera</button>
+  </div>
+
   <div id="qr-reader"></div>
+
   <p id="result">Scan a QR code to see its URL.</p>
   <p id="error"></p>
+
   <div id="json-display"></div>
+
   <button id="set-url" style="display: none;">Set URL</button>
 
   <!-- Error Popup -->
   <div id="popup">
-    <p>Invalid QR Code! The QR code must contain the word "wikipedia".</p>
+    <p>Invalid QR Code! Only My-Menu QR code is allowed.</p>
     <button id="close-popup">Close</button>
   </div>
 
@@ -158,8 +218,8 @@
             // On successful scan
             detectedURL = decodedText;
 
-            // Validate if "wikipedia" exists in the scanned text
-            if (/wikipedia/i.test(decodedText)) {
+            // Validate if "mymenu" exists in the scanned text (case-insensitive)
+            if (/mymenu/i.test(decodedText)) {
               resultDisplay.textContent = `Decoded Text: ${decodedText}`;
               errorDisplay.textContent = "";
 
