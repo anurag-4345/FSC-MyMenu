@@ -5,50 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My-Menu QR Scanner</title>
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" defer></script>
+  <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js" defer></script>
 </head>
 <body>
-  <div id="home-screen">
-    <h1>My-Menu QR Scanner</h1>
-    <div class="input-container">
-      <input id="name-field" type="text" placeholder="Enter your name" />
-      <input id="phone-field" type="number" placeholder="Enter your 10-digit phone number" />
-    </div>
+  <h1>My-Menu QR Scanner</h1>
+  <div class="input-container">
+    <input id="name-field" type="text" placeholder="Enter your name" />
+    <input id="phone-field" type="number" placeholder="Enter your 10-digit phone number" />
+  </div>
 
-    <div class="button-container">
-      <button id="open-camera" disabled>Open Camera</button>
-      <button id="flip-camera" style="display: none;">Flip Camera</button>
-    </div>
+  <div class="button-container">
+    <button id="open-camera" disabled>Open Camera</button>
+    <button id="flip-camera" style="display: none;">Flip Camera</button>
+  </div>
 
-    <div id="qr-reader"></div>
+  <div id="qr-reader"></div>
 
-    <p id="result">Scan a QR code to see its URL.</p>
-    <p id="error"></p>
+  <p id="result">Scan a QR code to see its URL.</p>
+  <p id="error"></p>
 
-    <div id="json-display"></div>
+  <div id="json-display"></div>
 
-    <button id="set-url" style="display: none;">Set URL</button>
-    <button id="proceed-button" style="display: none;">Proceed Merchant</button>
+  <button id="set-url" style="display: none;">Set URL</button>
 
-    <!-- Error Popup -->
-    <div id="popup">
-      <p>Invalid QR Code! Only My-Menu QR code is allowed.</p>
-      <button id="close-popup">Close</button>
-    </div>
+  <!-- Error Popup -->
+  <div id="popup">
+    <p>Invalid QR Code! Only My-Menu QR code is allowed.</p>
+    <button id="close-popup">Close</button>
   </div>
 
   <!-- Success Popup -->
   <div id="success-popup" style="display: none;">
     <p>Successfully executed!</p>
-    <button id="close-success-popup">Close</button>
   </div>
 
-  <!-- Merchant Details Popup -->
-  <div id="merchant-popup" style="display: none;">
-    <h2>Merchant Details</h2>
-    <div id="merchant-details"></div>
-    <button id="close-merchant-popup">Close</button>
-  </div>
+  <!-- Proceed Merchant Button -->
+  <button id="proceed-button" style="display: none;">Proceed Merchant</button>
 
   <!-- Progress Bar -->
   <div id="progress-bar-container" style="display: none;">
