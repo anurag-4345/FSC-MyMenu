@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Scanner with Set URL</title>
+  <title>New Mechant placed</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <style>
     body {
@@ -67,12 +67,28 @@
       color: red;
       font-weight: bold;
     }
+
+    #popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background: white;
+      border: 1px solid red;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    #popup button {
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
-  <h1>Enhanced QR Code Scanner</h1>
+  <h1>New Boaridng Mechant</h1>
   <input id="name-field" type="text" placeholder="Enter your name">
-  <input id="phone-field" type="text" placeholder="Enter your phone number">
+  <input id="phone-field" type="number" placeholder="Enter your 10-digit phone number">
   <button id="open-camera" disabled>Open Camera</button>
   <button id="flip-camera" style="display: none;">Flip Camera</button>
   <div id="qr-reader"></div>
@@ -80,6 +96,12 @@
   <p id="error"></p>
   <div id="json-display"></div>
   <button id="set-url" style="display: none;">Set URL</button>
+
+  <!-- Error Popup -->
+  <div id="popup">
+    <p>Invalid QR code! Only Wikipedia links are allowed.</p>
+    <button id="retry-scan">Retry</button>
+  </div>
 
   <script>
     const nameField = document.getElementById("name-field");
@@ -91,15 +113,17 @@
     const errorDisplay = document.getElementById("error");
     const jsonDisplay = document.getElementById("json-display");
     const setURLButton = document.getElementById("set-url");
+    const popup = document.getElementById("popup");
+    const retryButton = document.getElementById("retry-scan");
 
     let qrScanner;
     let currentFacingMode = "environment"; // Default to back camera
     let detectedURL = ""; // Store the detected QR code URL
 
-    // Enable camera button when both fields are filled
+    // Enable camera button when name and valid phone number are entered
     function enableCameraButton() {
       const isNameValid = nameField.value.trim().length > 0;
-      const isPhoneValid = phoneField.value.trim().length > 0;
+      const isPhoneValid = phoneField.value.trim().length === 10;
       openCameraButton.disabled = !(isNameValid && isPhoneValid);
     }
 
@@ -119,25 +143,32 @@
           (decodedText) => {
             // On successful scan
             detectedURL = decodedText;
-            resultDisplay.textContent = `Decoded URL: ${decodedText}`;
-            errorDisplay.textContent = "";
 
-            // Stop the camera and show the "Set URL" button
-            qrScanner.stop().then(() => {
-              qrReaderDiv.style.display = "none";
-              flipCameraButton.style.display = "none";
-              setURLButton.style.display = "inline-block";
-            });
+            // Validate the URL
+            if (decodedText.startsWith("https://wikipedia.org")) {
+              resultDisplay.textContent = `Decoded URL: ${decodedText}`;
+              errorDisplay.textContent = "";
 
-            // Create JSON object with user input and QR code URL
-            const data = {
-              name: nameField.value.trim(),
-              phone: phoneField.value.trim(),
-              qrCodeURL: decodedText,
-            };
+              // Stop the scanner and show the "Set URL" button
+              qrScanner.stop().then(() => {
+                qrReaderDiv.style.display = "none";
+                flipCameraButton.style.display = "none";
+                setURLButton.style.display = "inline-block";
+              });
 
-            // Display JSON
-            jsonDisplay.textContent = JSON.stringify(data, null, 2);
+              // Create JSON object with user input and QR code URL
+              const data = {
+                name: nameField.value.trim(),
+                phone: phoneField.value.trim(),
+                qrCodeURL: decodedText,
+              };
+
+              // Display JSON
+              jsonDisplay.textContent = JSON.stringify(data, null, 2);
+            } else {
+              // Show error popup for invalid URL
+              showPopup();
+            }
           },
           (error) => {
             // Display scanning errors (only if camera is active)
@@ -166,6 +197,17 @@
       stopQRScanner();
       startQRScanner();
     }
+
+    // Show popup for invalid QR code
+    function showPopup() {
+      popup.style.display = "block";
+    }
+
+    // Hide popup and retry scanning
+    retryButton.addEventListener("click", () => {
+      popup.style.display = "none";
+      startQRScanner();
+    });
 
     // Handle "Set URL" button click
     setURLButton.addEventListener("click", () => {
