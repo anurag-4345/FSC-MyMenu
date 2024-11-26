@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Menu</title>
+  <title>QR Code Scanner with Wikipedia Validation</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <style>
     body {
@@ -84,10 +84,23 @@
     #popup p {
       margin: 0;
     }
+
+    #popup button {
+      background-color: #FF0000;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #popup button:hover {
+      background-color: #cc0000;
+    }
   </style>
 </head>
 <body>
-  <h1>New Boaridng Mechant</h1>
+  <h1>Enhanced QR Code Scanner</h1>
   <input id="name-field" type="text" placeholder="Enter your name">
   <input id="phone-field" type="number" placeholder="Enter your 10-digit phone number">
   <button id="open-camera" disabled>Open Camera</button>
@@ -101,6 +114,7 @@
   <!-- Error Popup -->
   <div id="popup">
     <p>Invalid QR Code! The QR code must contain the word "wikipedia".</p>
+    <button id="close-popup">Close</button>
   </div>
 
   <script>
@@ -114,6 +128,7 @@
     const jsonDisplay = document.getElementById("json-display");
     const setURLButton = document.getElementById("set-url");
     const popup = document.getElementById("popup");
+    const closePopupButton = document.getElementById("close-popup");
 
     let qrScanner;
     let currentFacingMode = "environment"; // Default to back camera
@@ -199,13 +214,13 @@
 
     // Show popup for invalid QR code
     function showPopup() {
-      setTimeout(() => {
-        popup.style.display = "block";
-        setTimeout(() => {
-          popup.style.display = "none";
-        }, 300); // Close after 0.3 seconds
-      }, 1000); // Show after 1 second
+      popup.style.display = "block";
     }
+
+    // Close popup when user clicks "Close"
+    closePopupButton.addEventListener("click", () => {
+      popup.style.display = "none";
+    });
 
     // Handle "Set URL" button click
     setURLButton.addEventListener("click", () => {
