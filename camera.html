@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Open Camera</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    video {
+      width: 100%;
+      max-width: 600px;
+      margin: 20px auto;
+      border: 2px solid #333;
+      border-radius: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      background-color: #999;
+    }
+  </style>
+</head>
+<body>
+  <h1>Camera App</h1>
+  <video id="camera" autoplay playsinline></video>
+  <button id="start-camera">Open Camera</button>
+  <p id="error-message" style="color: red;"></p>
+
+  <script>
+    const startCameraButton = document.getElementById("start-camera");
+    const cameraVideo = document.getElementById("camera");
+    const errorMessage = document.getElementById("error-message");
+
+    startCameraButton.addEventListener("click", async () => {
+      errorMessage.textContent = ""; // Clear any error messages
+
+      try {
+        // Request access to the camera
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        cameraVideo.srcObject = stream; // Attach the camera stream to the video element
+        startCameraButton.disabled = true; // Disable the button after starting the camera
+      } catch (error) {
+        console.error("Error accessing camera:", error);
+        errorMessage.textContent = "Unable to access the camera. Please check permissions.";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -4,20 +4,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>QR Code Scanner</title>
-  <link rel="stylesheet" href="styles.css">
   <script src="https://unpkg.com/html5-qrcode/minified/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    #qr-reader {
+      width: 300px;
+      margin: 20px auto;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      color: green;
+    }
+
+    #error {
+      color: red;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
-  <div id="app">
-    <h1>QR Code Scanner</h1>
-    <div id="qr-reader-container">
-      <button id="start-scan">Start QR Scan</button>
-      <div id="qr-reader" class="hidden" style="width: 300px; margin: 20px auto;"></div>
-      <button id="stop-scan" class="hidden">Stop Scan</button>
-      <p id="scan-result" class="hidden">Scan Result: <span id="result-text"></span></p>
-    </div>
-    <p id="error-message" class="error"></p>
-  </div>
-  <script src="script.js"></script>
+  <h1>QR Code Scanner</h1>
+  <div id="qr-reader"></div>
+  <p id="result">Scan a QR code to see its URL.</p>
+  <p id="error"></p>
+  <button id="stop-scan">Stop Scan</button>
+
+  <script>
+    const qrReader = new Html5Qrcode("qr-reader");
+    const resultDisplay = document.getElementById("result");
+    const errorDisplay = document.getElementById("error");
+    const stopScanButton = document.getElementById("stop-scan");
+
+    function startQRScanner() {
+      qrReader
+        .start(
+          { facingMode: "environment" }, // Back camera
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+          },
+          (decodedText) => {
+            // On successful scan
+            resultDisplay.textContent = `Decoded URL: ${decodedText}`;
+            errorDisplay.textContent = "";
+            qrReader.stop(); // Stop scanning after successful detection
+          },
+          (error) => {
+            // Handle scanning errors
+            errorDisplay.textContent = `Scanning error: ${error}`;
+          }
+        )
+        .catch((err) => {
+          errorDisplay.textContent = `Failed to start QR scanner: ${err}`;
+        });
+    }
+
+    // Start QR scanner when the page loads
+    window.onload = () => startQRScanner();
+
+    // Stop QR scanner
+    stopScanButton.addEventListener("click", () => {
+      qrReader
+        .stop()
+        .then(() => {
+          resultDisplay.textContent = "Scanner stopped.";
+        })
+        .catch((err) => {
+          errorDisplay.textContent = `Error stopping scanner: ${err}`;
+        });
+    });
+  </script>
 </body>
 </html>
