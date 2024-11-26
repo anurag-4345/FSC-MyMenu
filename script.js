@@ -22,6 +22,15 @@ const merchantDetails = document.getElementById("merchant-details");
 let scannedData = null;
 let currentScanner = null;
 
+// Enable the camera button when the user fills in name and phone
+function enableCameraButton() {
+  if (nameField.value && phoneField.value.length === 10) {
+    openCameraButton.disabled = false;
+  } else {
+    openCameraButton.disabled = true;
+  }
+}
+
 // Show the "Proceed Merchant" button after QR scan is successful
 function showProceedButton() {
   proceedButton.style.display = "block";
@@ -47,50 +56,18 @@ function showProgressBar() {
 // Show success popup after progress bar is complete
 function showSuccessPopup() {
   successPopup.style.display = "block";
-  setTimeout(() => {
-    executeURL();
-  }, 1000);
-}
-
-// Execute URL based on user details
-function executeURL() {
-  let userDetails = {
-    name: nameField.value,
-    phone: phoneField.value,
-    qr: scannedData,
-  };
-  let url = `https://my.menu.com?param_details=${encodeURIComponent(JSON.stringify(userDetails))}`;
-  console.log("Successfully executed URL:", url);
-}
-
-// Close the popups and return to the home screen
-function closePopups() {
-  document.getElementById("home-screen").style.display = "block";
-  successPopup.style.display = "none";
-  merchantPopup.style.display = "none";
-  progressBarContainer.style.display = "none";
 }
 
 // Close success popup
 closeSuccessPopupButton.addEventListener("click", () => {
-  closePopups();
-});
-
-// Close merchant popup
-closeMerchantPopupButton.addEventListener("click", () => {
-  closePopups();
+  successPopup.style.display = "none";
+  document.getElementById("home-screen").style.display = "block";
 });
 
 // Close error popup
 closePopupButton.addEventListener("click", () => {
-  closePopups();
-});
-
-// Handle proceed button click
-proceedButton.addEventListener("click", () => {
-  document.getElementById("home-screen").style.display = "none";
-  showProgressBar();
-  showMerchantDetailsPopup();
+  popup.style.display = "none";
+  document.getElementById("home-screen").style.display = "block";
 });
 
 // Show Merchant details in the popup
@@ -103,4 +80,58 @@ function showMerchantDetailsPopup() {
   merchantPopup.style.display = "block";
 }
 
-// QR Scanner logic will go here. On successful scan, set the scanned data and show proceed button.
+// Handle proceed button click
+proceedButton.addEventListener("click", () => {
+  document.getElementById("home-screen").style.display = "none";
+  showProgressBar();
+  showMerchantDetailsPopup();
+});
+
+// Handle close merchant popup
+closeMerchantPopupButton.addEventListener("click", () => {
+  merchantPopup.style.display = "none";
+  document.getElementById("home-screen").style.display = "block";
+});
+
+// Handle QR code scanner result
+function handleQRCodeResult(result) {
+  if (result && result.includes("wikipedia.org")) {
+    scannedData = result;
+    resultDisplay.textContent = `Scanned URL: ${scannedData}`;
+    showProceedButton();
+    setURLButton.style.display = "block";
+    jsonDisplay.textContent = JSON.stringify({ url: scannedData }, null, 2);
+  } else {
+    errorDisplay.textContent = "Invalid QR Code! Only My-Menu QR code is allowed.";
+    popup.style.display = "block";
+  }
+}
+
+// Initialize QR code scanner
+function startScanner() {
+  const html5QrCode = new Html5Qrcode("qr-reader");
+  html5QrCode.start(
+    { facingMode: "environment" },
+    {
+      fps: 10,
+      qrbox: { width: 250, height: 250 },
+    },
+    handleQRCodeResult
+  ).catch(err => {
+    errorDisplay.textContent = "Error opening camera.";
+  });
+}
+
+// Close the camera and show the scanned QR data
+function closeCamera() {
+  if (currentScanner) {
+    currentScanner.stop();
+  }
+}
+
+// Enable the camera button when the user has entered valid name and phone number
+nameField.addEventListener("input", enableCameraButton);
+phoneField.addEventListener("input", enableCameraButton);
+
+// Start QR code scanning when the "Open Camera" button is clicked
+openCameraButton.addEventListener("click", startScanner);
