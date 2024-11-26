@@ -6,7 +6,7 @@ const qrReaderDiv = document.getElementById("qr-reader");
 const resultDisplay = document.getElementById("result");
 const errorDisplay = document.getElementById("error");
 const jsonDisplay = document.getElementById("json-display");
-const setURLButton = document.getElementById("set-url");
+// const setURLButton = document.getElementById("set-url");
 const proceedButton = document.getElementById("proceed-button");
 const progressBarContainer = document.getElementById("progress-bar-container");
 const progressBar = document.getElementById("progress-bar");
@@ -52,7 +52,7 @@ function startQRScanner() {
           qrScanner.stop().then(() => {
             qrReaderDiv.style.display = "none";
             flipCameraButton.style.display = "none";
-            setURLButton.style.display = "inline-block";
+            //setURLButton.style.display = "inline-block";
           });
 
           // Create JSON object with user input and QR code text
@@ -99,9 +99,10 @@ closePopupButton.addEventListener("click", () => {
 });
 
 // Handle "Set URL" button click
-setURLButton.addEventListener("click", () => {
-  alert(`The detected content is: ${detectedURL}`);
-});
+
+//setURLButton.addEventListener("click", () => {
+  //alert(`The detected content is: ${detectedURL}`);
+//});
 
 // Start the progress bar animation and show success message
 function startProgressBar() {
