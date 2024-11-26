@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Open Camera</title>
+  <title>QR Code Scanner with Set URL</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -13,17 +14,24 @@
       padding: 20px;
     }
 
-    video {
-      width: 100%;
-      max-width: 600px;
+    #qr-reader {
+      width: 300px;
       margin: 20px auto;
-      border: 2px solid #333;
-      border-radius: 10px;
+      display: none; /* Hidden until camera is opened */
+    }
+
+    input {
+      padding: 10px;
+      font-size: 16px;
+      margin: 10px;
+      width: 80%;
+      max-width: 300px;
     }
 
     button {
       padding: 10px 20px;
       font-size: 16px;
+      margin: 10px;
       background-color: #007BFF;
       color: white;
       border: none;
@@ -33,33 +41,145 @@
 
     button:disabled {
       background-color: #999;
+      cursor: not-allowed;
+    }
+
+    #json-display {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #333;
+      background: #eee;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: left;
+      display: inline-block;
+    }
+
+    #result, #error {
+      margin-top: 10px;
+    }
+
+    #result {
+      color: green;
+    }
+
+    #error {
+      color: red;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h1>Camera App</h1>
-  <video id="camera" autoplay playsinline></video>
-  <button id="start-camera">Open Camera</button>
-  <p id="error-message" style="color: red;"></p>
+  <h1>Enhanced QR Code Scanner</h1>
+  <input id="name-field" type="text" placeholder="Enter your name">
+  <input id="phone-field" type="text" placeholder="Enter your phone number">
+  <button id="open-camera" disabled>Open Camera</button>
+  <button id="flip-camera" style="display: none;">Flip Camera</button>
+  <div id="qr-reader"></div>
+  <p id="result">Scan a QR code to see its URL.</p>
+  <p id="error"></p>
+  <div id="json-display"></div>
+  <button id="set-url" style="display: none;">Set URL</button>
 
   <script>
-    const startCameraButton = document.getElementById("start-camera");
-    const cameraVideo = document.getElementById("camera");
-    const errorMessage = document.getElementById("error-message");
+    const nameField = document.getElementById("name-field");
+    const phoneField = document.getElementById("phone-field");
+    const openCameraButton = document.getElementById("open-camera");
+    const flipCameraButton = document.getElementById("flip-camera");
+    const qrReaderDiv = document.getElementById("qr-reader");
+    const resultDisplay = document.getElementById("result");
+    const errorDisplay = document.getElementById("error");
+    const jsonDisplay = document.getElementById("json-display");
+    const setURLButton = document.getElementById("set-url");
 
-    startCameraButton.addEventListener("click", async () => {
-      errorMessage.textContent = ""; // Clear any error messages
+    let qrScanner;
+    let currentFacingMode = "environment"; // Default to back camera
+    let detectedURL = ""; // Store the detected QR code URL
 
-      try {
-        // Request access to the camera
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        cameraVideo.srcObject = stream; // Attach the camera stream to the video element
-        startCameraButton.disabled = true; // Disable the button after starting the camera
-      } catch (error) {
-        console.error("Error accessing camera:", error);
-        errorMessage.textContent = "Unable to access the camera. Please check permissions.";
+    // Enable camera button when both fields are filled
+    function enableCameraButton() {
+      const isNameValid = nameField.value.trim().length > 0;
+      const isPhoneValid = phoneField.value.trim().length > 0;
+      openCameraButton.disabled = !(isNameValid && isPhoneValid);
+    }
+
+    // Start the QR scanner
+    function startQRScanner() {
+      qrReaderDiv.style.display = "block";
+      flipCameraButton.style.display = "inline-block";
+      qrScanner = new Html5Qrcode("qr-reader");
+
+      qrScanner
+        .start(
+          { facingMode: currentFacingMode },
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+          },
+          (decodedText) => {
+            // On successful scan
+            detectedURL = decodedText;
+            resultDisplay.textContent = `Decoded URL: ${decodedText}`;
+            errorDisplay.textContent = "";
+
+            // Stop the camera and show the "Set URL" button
+            qrScanner.stop().then(() => {
+              qrReaderDiv.style.display = "none";
+              flipCameraButton.style.display = "none";
+              setURLButton.style.display = "inline-block";
+            });
+
+            // Create JSON object with user input and QR code URL
+            const data = {
+              name: nameField.value.trim(),
+              phone: phoneField.value.trim(),
+              qrCodeURL: decodedText,
+            };
+
+            // Display JSON
+            jsonDisplay.textContent = JSON.stringify(data, null, 2);
+          },
+          (error) => {
+            // Display scanning errors (only if camera is active)
+            errorDisplay.textContent = `Scanning...`;
+          }
+        )
+        .catch((err) => {
+          errorDisplay.textContent = `Error starting camera: ${err}`;
+        });
+    }
+
+    // Stop the QR scanner
+    function stopQRScanner() {
+      if (qrScanner) {
+        qrScanner.stop().then(() => {
+          qrReaderDiv.style.display = "none";
+          flipCameraButton.style.display = "none";
+        });
       }
+    }
+
+    // Flip the camera
+    function flipCamera() {
+      currentFacingMode =
+        currentFacingMode === "environment" ? "user" : "environment";
+      stopQRScanner();
+      startQRScanner();
+    }
+
+    // Handle "Set URL" button click
+    setURLButton.addEventListener("click", () => {
+      alert(`The detected URL is: ${detectedURL}`);
     });
+
+    // Event listeners
+    nameField.addEventListener("input", enableCameraButton);
+    phoneField.addEventListener("input", enableCameraButton);
+    openCameraButton.addEventListener("click", startQRScanner);
+    flipCameraButton.addEventListener("click", flipCamera);
+
+    // Ensure the scanner stops when the page unloads
+    window.addEventListener("beforeunload", stopQRScanner);
   </script>
 </body>
 </html>
