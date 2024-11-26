@@ -117,7 +117,7 @@ function startProgressBar() {
       setTimeout(() => {
         successPopup.style.display = "block";
         // Execute URL with user details
-        const url = `https://my.menu.com?name=${encodeURIComponent(nameField.value)}&phone=${encodeURIComponent(phoneField.value)}`;
+        const url = `https://my.menu.com?name=${encodeURIComponent(nameField.value)}&phone=${encodeURIComponent(phoneField.value)}&URL=${encodeURIComponent(detectedURL)}`;
         console.log(`Executed URL: ${url}`);
       }, 500);
     }
