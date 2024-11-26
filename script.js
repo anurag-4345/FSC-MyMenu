@@ -20,6 +20,7 @@ const closeMerchantPopupButton = document.getElementById("close-merchant-popup")
 const merchantDetails = document.getElementById("merchant-details");
 
 let scannedData = null;
+let currentScanner = null;
 
 // Show the "Proceed Merchant" button after QR scan is successful
 function showProceedButton() {
