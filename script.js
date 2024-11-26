@@ -58,10 +58,22 @@ function showSuccessPopup() {
   successPopup.style.display = "block";
 }
 
-// Close success popup
+// Close success popup and reset everything
 closeSuccessPopupButton.addEventListener("click", () => {
   successPopup.style.display = "none";
   document.getElementById("home-screen").style.display = "block";
+
+  // Reset all fields
+  nameField.value = "";
+  phoneField.value = "";
+  resultDisplay.textContent = "";
+  errorDisplay.textContent = "";
+  jsonDisplay.textContent = "";
+  setURLButton.style.display = "none";
+  proceedButton.style.display = "none";
+  userInfoTable.style.display = "none";
+  progressBarContainer.style.display = "none";
+  merchantPopup.style.display = "none";
 });
 
 // Close error popup
@@ -120,13 +132,6 @@ function startScanner() {
   ).catch(err => {
     errorDisplay.textContent = "Error opening camera.";
   });
-}
-
-// Close the camera and show the scanned QR data
-function closeCamera() {
-  if (currentScanner) {
-    currentScanner.stop();
-  }
 }
 
 // Enable the camera button when the user has entered valid name and phone number
