@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>New Mechant placed</title>
+  <title>My Menu</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <style>
     body {
@@ -78,10 +78,11 @@
       background: white;
       border: 1px solid red;
       box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+      text-align: center;
     }
 
-    #popup button {
-      margin-top: 10px;
+    #popup p {
+      margin: 0;
     }
   </style>
 </head>
@@ -99,8 +100,7 @@
 
   <!-- Error Popup -->
   <div id="popup">
-    <p>Invalid QR code! Only Wikipedia links are allowed.</p>
-    <button id="retry-scan">Retry</button>
+    <p>Invalid QR Code! The QR code must contain the word "wikipedia".</p>
   </div>
 
   <script>
@@ -114,11 +114,10 @@
     const jsonDisplay = document.getElementById("json-display");
     const setURLButton = document.getElementById("set-url");
     const popup = document.getElementById("popup");
-    const retryButton = document.getElementById("retry-scan");
 
     let qrScanner;
     let currentFacingMode = "environment"; // Default to back camera
-    let detectedURL = ""; // Store the detected QR code URL
+    let detectedURL = ""; // Store the detected QR code text
 
     // Enable camera button when name and valid phone number are entered
     function enableCameraButton() {
@@ -144,9 +143,9 @@
             // On successful scan
             detectedURL = decodedText;
 
-            // Validate the URL
-            if (decodedText.startsWith("https://wikipedia.org")) {
-              resultDisplay.textContent = `Decoded URL: ${decodedText}`;
+            // Validate if "wikipedia" exists in the scanned text
+            if (/wikipedia/i.test(decodedText)) {
+              resultDisplay.textContent = `Decoded Text: ${decodedText}`;
               errorDisplay.textContent = "";
 
               // Stop the scanner and show the "Set URL" button
@@ -156,17 +155,17 @@
                 setURLButton.style.display = "inline-block";
               });
 
-              // Create JSON object with user input and QR code URL
+              // Create JSON object with user input and QR code text
               const data = {
                 name: nameField.value.trim(),
                 phone: phoneField.value.trim(),
-                qrCodeURL: decodedText,
+                qrCodeContent: decodedText,
               };
 
               // Display JSON
               jsonDisplay.textContent = JSON.stringify(data, null, 2);
             } else {
-              // Show error popup for invalid URL
+              // Show error popup for invalid QR code
               showPopup();
             }
           },
@@ -200,18 +199,17 @@
 
     // Show popup for invalid QR code
     function showPopup() {
-      popup.style.display = "block";
+      setTimeout(() => {
+        popup.style.display = "block";
+        setTimeout(() => {
+          popup.style.display = "none";
+        }, 300); // Close after 0.3 seconds
+      }, 1000); // Show after 1 second
     }
-
-    // Hide popup and retry scanning
-    retryButton.addEventListener("click", () => {
-      popup.style.display = "none";
-      startQRScanner();
-    });
 
     // Handle "Set URL" button click
     setURLButton.addEventListener("click", () => {
-      alert(`The detected URL is: ${detectedURL}`);
+      alert(`The detected content is: ${detectedURL}`);
     });
 
     // Event listeners
