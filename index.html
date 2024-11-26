@@ -34,6 +34,36 @@
     <button id="close-popup">Close</button>
   </div>
 
+  <!-- Success Popup -->
+  <div id="success-popup" style="display: none;">
+    <p>Successfully executed!</p>
+  </div>
+
+  <!-- Proceed Merchant Button -->
+  <button id="proceed-button" style="display: none;">Proceed Merchant</button>
+
+  <!-- Progress Bar -->
+  <div id="progress-bar-container" style="display: none;">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- User Information Table -->
+  <div id="user-info-table" style="display: none;">
+    <h2>User Details</h2>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>QR Code Content</th>
+      </tr>
+      <tr>
+        <td id="user-name"></td>
+        <td id="user-phone"></td>
+        <td id="user-qr-content"></td>
+      </tr>
+    </table>
+  </div>
+
   <script src="script.js" defer></script>
 </body>
 </html>

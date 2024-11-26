@@ -7,8 +7,13 @@ const resultDisplay = document.getElementById("result");
 const errorDisplay = document.getElementById("error");
 const jsonDisplay = document.getElementById("json-display");
 const setURLButton = document.getElementById("set-url");
-const popup = document.getElementById("popup");
+const proceedButton = document.getElementById("proceed-button");
+const progressBarContainer = document.getElementById("progress-bar-container");
+const progressBar = document.getElementById("progress-bar");
+const userInfoTable = document.getElementById("user-info-table");
+const successPopup = document.getElementById("success-popup");
 const closePopupButton = document.getElementById("close-popup");
+const popup = document.getElementById("popup");
 
 let qrScanner;
 let currentFacingMode = "environment"; // Default to back camera
@@ -59,6 +64,15 @@ function startQRScanner() {
 
           // Display JSON
           jsonDisplay.textContent = JSON.stringify(data, null, 2);
+
+          // Fill the user details table
+          document.getElementById("user-name").textContent = data.name;
+          document.getElementById("user-phone").textContent = data.phone;
+          document.getElementById("user-qr-content").textContent = data.qrCodeContent;
+
+          // Show user info table and proceed button
+          userInfoTable.style.display = "block";
+          proceedButton.style.display = "inline-block";
         } else {
           // Show error popup for invalid QR code
           showPopup();
@@ -72,24 +86,6 @@ function startQRScanner() {
     .catch((err) => {
       errorDisplay.textContent = `Error starting camera: ${err}`;
     });
-}
-
-// Stop the QR scanner
-function stopQRScanner() {
-  if (qrScanner) {
-    qrScanner.stop().then(() => {
-      qrReaderDiv.style.display = "none";
-      flipCameraButton.style.display = "none";
-    });
-  }
-}
-
-// Flip the camera
-function flipCamera() {
-  currentFacingMode =
-    currentFacingMode === "environment" ? "user" : "environment";
-  stopQRScanner();
-  startQRScanner();
 }
 
 // Show popup for invalid QR code
@@ -107,10 +103,39 @@ setURLButton.addEventListener("click", () => {
   alert(`The detected content is: ${detectedURL}`);
 });
 
+// Start the progress bar animation and show success message
+function startProgressBar() {
+  progressBarContainer.style.display = "block";
+  let progress = 0;
+
+  const interval = setInterval(() => {
+    progress += 5;
+    progressBar.style.width = `${progress}%`;
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      setTimeout(() => {
+        successPopup.style.display = "block";
+        // Execute URL with user details
+        const url = `https://my.menu.com?name=${encodeURIComponent(nameField.value)}&phone=${encodeURIComponent(phoneField.value)}`;
+        console.log(`Executed URL: ${url}`);
+      }, 500);
+    }
+  }, 100);
+}
+
+// Handle "Proceed Merchant" button click
+proceedButton.addEventListener("click", () => {
+  startProgressBar();
+});
+
 // Event listeners
 nameField.addEventListener("input", enableCameraButton);
 phoneField.addEventListener("input", enableCameraButton);
 openCameraButton.addEventListener("click", startQRScanner);
-flipCameraButton.addEventListener("click", flipCamera);
-
-window.addEventListener("beforeunload", stopQRScanner);
+flipCameraButton.addEventListener("click", () => {
+  currentFacingMode =
+    currentFacingMode === "environment" ? "user" : "environment";
+  stopQRScanner();
+  startQRScanner();
+});
