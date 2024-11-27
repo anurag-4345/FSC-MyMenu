@@ -116,6 +116,24 @@
       max-height: 250px;
     }
 
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: #dc3545;
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background-color 0.3s ease;
+    }
+
+    .close-btn:hover {
+      background-color: #c82333;
+    }
+
     .add-product-section input,
     .add-product-section select,
     .add-product-section button {
@@ -258,87 +276,93 @@
 
       Array.from(files).forEach(file => {
         const reader = new FileReader();
-        reader.onload = (event) => {
-          const img = document.createElement('img');
-          img.src = event.target.result;
-          previewContainer.appendChild(img);
-          imageFiles.push(event.target.result);
+        reader.onload = function(event) {
+          const imgElement = document.createElement('img');
+          imgElement.src = event.target.result;
+          previewContainer.appendChild(imgElement);
+          imageFiles.push(file);
         };
         reader.readAsDataURL(file);
       });
     });
 
-    // Form validation and adding product
+    // Add product functionality
     function addProduct() {
       const name = nameInput.value;
       const price = priceInput.value;
       const category = categorySelect.value;
 
+      if (validateForm(name, price, category)) {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+
+        const slider = document.createElement('div');
+        slider.classList.add('slider');
+        imageFiles.forEach(file => {
+          const imgElement = document.createElement('img');
+          imgElement.src = URL.createObjectURL(file);
+          slider.appendChild(imgElement);
+        });
+
+        productCard.appendChild(slider);
+
+        const productInfo = document.createElement('div');
+        productInfo.innerHTML = `
+          <h3>${name}</h3>
+          <p>$${price}</p>
+          <p>${category}</p>
+        `;
+        productCard.appendChild(productInfo);
+
+        // Close button to delete product
+        const closeButton = document.createElement('button');
+        closeButton.classList.add('close-btn');
+        closeButton.innerText = 'X';
+        closeButton.onclick = () => productCard.remove();
+        productCard.appendChild(closeButton);
+
+        productContainer.appendChild(productCard);
+
+        // Reset the form and close the admin section
+        resetForm();
+        toggleAdminSection();
+      }
+    }
+
+    // Validate form fields
+    function validateForm(name, price, category) {
       let isValid = true;
-
-      // Reset error messages
-      document.getElementById('name-error').textContent = '';
-      document.getElementById('price-error').textContent = '';
-      document.getElementById('category-error').textContent = '';
-      document.getElementById('image-error').textContent = '';
-
       if (!name) {
         document.getElementById('name-error').textContent = 'Please enter a product name.';
         isValid = false;
       }
-
-      if (!price || price <= 0) {
+      if (!price || isNaN(price) || price <= 0) {
         document.getElementById('price-error').textContent = 'Please enter a valid product price.';
         isValid = false;
       }
-
       if (!category) {
         document.getElementById('category-error').textContent = 'Please select a category.';
         isValid = false;
       }
-
       if (imageFiles.length === 0) {
         document.getElementById('image-error').textContent = 'Please upload at least one image.';
         isValid = false;
       }
+      return isValid;
+    }
 
-      if (!isValid) return;
-
-      // Create product card
-      const card = document.createElement('div');
-      card.classList.add('product-card');
-
-      const cardName = document.createElement('h3');
-      cardName.textContent = name;
-      card.appendChild(cardName);
-
-      const cardPrice = document.createElement('p');
-      cardPrice.textContent = `Price: $${price}`;
-      card.appendChild(cardPrice);
-
-      const cardCategory = document.createElement('p');
-      cardCategory.textContent = `Category: ${category}`;
-      card.appendChild(cardCategory);
-
-      // Create image slider
-      const slider = document.createElement('div');
-      slider.classList.add('slider');
-      imageFiles.forEach(imgSrc => {
-        const img = document.createElement('img');
-        img.src = imgSrc;
-        slider.appendChild(img);
-      });
-
-      card.appendChild(slider);
-      productContainer.appendChild(card);
-
-      // Reset form after adding product
+    // Reset the form
+    function resetForm() {
       nameInput.value = '';
       priceInput.value = '';
       categorySelect.value = '';
       imageInput.value = '';
       previewContainer.innerHTML = '';
       imageFiles = [];
+      document.getElementById('name-error').textContent = '';
+      document.getElementById('price-error').textContent = '';
+      document.getElementById('category-error').textContent = '';
+      document.getElementById('image-error').textContent = '';
     }
   </script>
 </body>
