@@ -16,7 +16,6 @@
       justify-content: flex-start;
     }
 
-    /* Full-screen layout like a mobile app */
     .container {
       max-width: 600px;
       margin: 0 auto;
@@ -25,7 +24,6 @@
       height: 100%;
     }
 
-    /* Admin Section */
     .admin-section {
       position: fixed;
       top: 0;
@@ -66,7 +64,6 @@
       transform: scale(1.1);
     }
 
-    /* Product Card Styling */
     .product-card {
       background-color: white;
       border-radius: 10px;
@@ -88,6 +85,7 @@
       transform: translateY(-10px);
     }
 
+    /* Image Slider */
     .slider {
       display: flex;
       overflow: hidden;
@@ -104,16 +102,28 @@
       border-radius: 8px;
     }
 
-    /* Product Information Styling */
-    .product-card h3,
-    .product-card p {
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 10px;
+    .slider-buttons {
+      position: absolute;
+      top: 50%;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      transform: translateY(-50%);
     }
 
-    .slider img {
-      max-height: 250px;
+    .slider-buttons button {
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 20px;
+      transition: background 0.3s ease;
+    }
+
+    .slider-buttons button:hover {
+      background: rgba(0, 0, 0, 0.7);
     }
 
     .close-btn {
@@ -123,10 +133,10 @@
       background-color: #dc3545;
       color: white;
       border: none;
-      padding: 10px;
+      padding: 12px;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 18px;
+      font-size: 20px;
       transition: background-color 0.3s ease;
     }
 
@@ -166,7 +176,6 @@
       margin-bottom: 10px;
     }
 
-    /* Mobile Styles */
     @media (max-width: 768px) {
       .toggle-btn {
         top: 10px;
@@ -211,12 +220,10 @@
 </head>
 <body>
   <div class="container">
-    <!-- Toggle button to show/hide the admin section -->
     <button class="toggle-btn" onclick="toggleAdminSection()">
       <span id="toggle-text">You</span>
     </button>
 
-    <!-- Admin Add Product Section -->
     <div class="admin-section" id="admin-section">
       <h2>Add New Product</h2>
       <div class="add-product-section">
@@ -246,7 +253,6 @@
       </div>
     </div>
 
-    <!-- Display Created Products -->
     <h2>All Created Products</h2>
     <div class="product-container" id="product-container"></div>
   </div>
@@ -259,7 +265,7 @@
     const categorySelect = document.getElementById('product-category');
     const nameInput = document.getElementById('product-name');
     const priceInput = document.getElementById('product-price');
-    
+
     // Toggle admin section visibility
     function toggleAdminSection() {
       const adminSection = document.getElementById('admin-section');
@@ -296,6 +302,7 @@
         const productCard = document.createElement('div');
         productCard.classList.add('product-card');
 
+        // Image slider
         const slider = document.createElement('div');
         slider.classList.add('slider');
         imageFiles.forEach(file => {
@@ -318,10 +325,16 @@
         const closeButton = document.createElement('button');
         closeButton.classList.add('close-btn');
         closeButton.innerText = 'X';
-        closeButton.onclick = () => productCard.remove();
+        closeButton.onclick = () => {
+          productCard.remove();
+          saveProductsToLocalStorage();
+        };
         productCard.appendChild(closeButton);
 
         productContainer.appendChild(productCard);
+
+        // Save product to localStorage
+        saveProductsToLocalStorage();
 
         // Reset the form and close the admin section
         resetForm();
@@ -364,6 +377,41 @@
       document.getElementById('category-error').textContent = '';
       document.getElementById('image-error').textContent = '';
     }
+
+    // Save product data to localStorage
+    function saveProductsToLocalStorage() {
+      const products = [];
+      document.querySelectorAll('.product-card').forEach(card => {
+        const name = card.querySelector('h3').textContent;
+        const price = card.querySelector('p').textContent;
+        const category = card.querySelectorAll('p')[1].textContent;
+        products.push({ name, price, category });
+      });
+
+      localStorage.setItem('products', JSON.stringify(products));
+    }
+
+    // Load products from localStorage
+    function loadProductsFromLocalStorage() {
+      const products = JSON.parse(localStorage.getItem('products')) || [];
+      products.forEach(product => {
+        const productCard = document.createElement('div');
+        productCard.classList.add('product-card');
+
+        const productInfo = document.createElement('div');
+        productInfo.innerHTML = `
+          <h3>${product.name}</h3>
+          <p>${product.price}</p>
+          <p>${product.category}</p>
+        `;
+        productCard.appendChild(productInfo);
+
+        productContainer.appendChild(productCard);
+      });
+    }
+
+    // Initialize products from localStorage
+    window.onload = () => loadProductsFromLocalStorage();
   </script>
 </body>
 </html>
