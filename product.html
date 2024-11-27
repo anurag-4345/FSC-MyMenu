@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Page with Mobile-Friendly UI</title>
+  <title>Admin Page with Smooth UI</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -87,19 +87,23 @@
 
     /* Image Slider */
     .slider {
-      display: flex;
-      overflow: hidden;
-      width: 100%;
       position: relative;
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
       margin-bottom: 10px;
+      border-radius: 8px;
+      background-color: #e5e5e5;
     }
 
     .slider img {
       width: 100%;
-      height: auto;
+      height: 100%;
       object-fit: cover;
-      transition: transform 0.3s ease;
-      border-radius: 8px;
+      transition: transform 0.5s ease;
+      position: absolute;
+      top: 0;
+      left: 0;
     }
 
     .slider-buttons {
@@ -109,6 +113,7 @@
       display: flex;
       justify-content: space-between;
       transform: translateY(-50%);
+      z-index: 10;
     }
 
     .slider-buttons button {
@@ -155,6 +160,7 @@
       background-color: #f9f9f9;
       font-size: 16px;
       outline: none;
+      transition: border-color 0.3s ease;
     }
 
     .add-product-section input:focus,
@@ -168,32 +174,17 @@
       cursor: pointer;
       border: none;
       margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    .add-product-section button:hover {
+      background-color: #218838;
     }
 
     .error-message {
       color: red;
       font-size: 12px;
       margin-bottom: 10px;
-    }
-
-    @media (max-width: 768px) {
-      .toggle-btn {
-        top: 10px;
-        right: 10px;
-        padding: 15px 25px;
-      }
-
-      .product-container {
-        flex-direction: column;
-        padding: 10px;
-      }
-
-      .add-product-section input,
-      .add-product-section select,
-      .add-product-section button {
-        font-size: 14px;
-        padding: 10px;
-      }
     }
 
     .preview-images {
@@ -216,6 +207,26 @@
     .preview-images img:hover {
       transform: scale(1.05);
     }
+
+    @media (max-width: 768px) {
+      .toggle-btn {
+        top: 10px;
+        right: 10px;
+        padding: 15px 25px;
+      }
+
+      .product-container {
+        flex-direction: column;
+        padding: 10px;
+      }
+
+      .add-product-section input,
+      .add-product-section select,
+      .add-product-section button {
+        font-size: 14px;
+        padding: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -235,11 +246,11 @@
 
         <select id="product-category" required>
           <option value="">Select Category</option>
-          <option value="Electronics">Fast Food</option>
-          <option value="Fashion">Main couse</option>
-          <option value="Home">Break Fast</option>
-          <option value="Books">Dinner</option>
-          <option value="Other">Lunch</option>
+          <option value="Electronics">Break Fast</option>
+          <option value="Fashion">Lunch</option>
+          <option value="Home">Dinner</option>
+          <option value="Books">Fast Food</option>
+          <option value="Other">Snake</option>
         </select>
         <div id="category-error" class="error-message"></div>
 
@@ -274,13 +285,11 @@
       toggleText.textContent = adminSection.classList.contains('open') ? 'Close' : 'You';
 
       // Enable or disable form elements based on admin section visibility
-      const inputs = document.querySelectorAll('.add-product-section input, .add-product-section select, .add-product-section button');
-      inputs.forEach(input => {
-        input.disabled = !adminSection.classList.contains('open');
-      });
+      document.querySelectorAll('.add-product-section input, .add-product-section select, .add-product-section button')
+        .forEach(input => input.disabled = !adminSection.classList.contains('open'));
     }
 
-    // Handle image selection and preview
+    // Handle image upload preview
     imageInput.addEventListener('change', function() {
       previewContainer.innerHTML = '';
       imageFiles = [];
@@ -290,13 +299,13 @@
           const imgElement = document.createElement('img');
           imgElement.src = event.target.result;
           previewContainer.appendChild(imgElement);
-          imageFiles.push(event.target.result);  // Save base64 string instead of the file itself
+          imageFiles.push(event.target.result);
         };
         reader.readAsDataURL(file);
       });
     });
 
-    // Add product functionality
+    // Add product
     function addProduct() {
       const name = nameInput.value;
       const price = priceInput.value;
@@ -311,11 +320,12 @@
         slider.classList.add('slider');
         imageFiles.forEach((base64, index) => {
           const imgElement = document.createElement('img');
-          imgElement.src = base64;  // Use base64 string
+          imgElement.src = base64;
+          imgElement.style.transform = index === 0 ? 'scale(1)' : 'scale(0)';
           slider.appendChild(imgElement);
         });
 
-        // Add slider navigation buttons
+        // Slider buttons
         const sliderButtons = document.createElement('div');
         sliderButtons.classList.add('slider-buttons');
         const prevButton = document.createElement('button');
@@ -338,7 +348,7 @@
         `;
         productCard.appendChild(productInfo);
 
-        // Close button to delete product
+        // Close button
         const closeButton = document.createElement('button');
         closeButton.classList.add('close-btn');
         closeButton.innerText = 'X';
@@ -349,17 +359,13 @@
         productCard.appendChild(closeButton);
 
         productContainer.appendChild(productCard);
-
-        // Save product to localStorage
         saveProductsToLocalStorage();
-
-        // Reset the form and close the admin section
         resetForm();
         toggleAdminSection();
       }
     }
 
-    // Function to move the slider images
+    // Slider navigation
     function moveSlider(slider, direction) {
       const images = slider.querySelectorAll('img');
       let currentIndex = Array.from(images).findIndex(img => img.style.transform === 'scale(1)');
@@ -369,7 +375,7 @@
       });
     }
 
-    // Validate form fields
+    // Validate form
     function validateForm(name, price, category) {
       let isValid = true;
       if (!name) {
@@ -391,7 +397,7 @@
       return isValid;
     }
 
-    // Reset the form
+    // Reset form
     function resetForm() {
       nameInput.value = '';
       priceInput.value = '';
@@ -405,7 +411,7 @@
       document.getElementById('image-error').textContent = '';
     }
 
-    // Save product data to localStorage
+    // Save products to localStorage
     function saveProductsToLocalStorage() {
       const products = [];
       document.querySelectorAll('.product-card').forEach(card => {
@@ -434,7 +440,7 @@
           slider.appendChild(imgElement);
         });
 
-        // Add slider navigation buttons
+        // Slider buttons
         const sliderButtons = document.createElement('div');
         sliderButtons.classList.add('slider-buttons');
         const prevButton = document.createElement('button');
@@ -457,7 +463,7 @@
         `;
         productCard.appendChild(productInfo);
 
-        // Close button to delete product
+        // Close button
         const closeButton = document.createElement('button');
         closeButton.classList.add('close-btn');
         closeButton.innerText = 'X';
@@ -471,7 +477,7 @@
       });
     }
 
-    // Initialize products from localStorage
+    // Load products when page loads
     window.onload = () => loadProductsFromLocalStorage();
   </script>
 </body>
