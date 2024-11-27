@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Page with Toggleable Section</title>
+  <title>Admin Page with Mobile-Friendly UI</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -13,29 +13,38 @@
       display: flex;
       flex-direction: column;
       min-height: 100vh;
+      justify-content: flex-start;
     }
 
-    /* Admin section hidden on the right side */
+    /* Full-screen layout like a mobile app */
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      overflow-x: hidden;
+      height: 100%;
+    }
+
+    /* Admin Section */
     .admin-section {
       position: fixed;
       top: 0;
-      right: -320px; /* Initially hidden off-screen */
-      width: 320px;
+      right: -320px;
+      width: 100%;
+      max-width: 320px;
       height: 100%;
       background-color: #fff;
       box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
-      transition: right 0.4s ease;
-      padding: 30px;
+      transition: right 0.3s ease;
+      padding: 20px;
       overflow-y: auto;
       z-index: 999;
     }
 
-    /* Admin section when visible */
     .admin-section.open {
       right: 0;
     }
 
-    /* Toggle button styles */
     .toggle-btn {
       position: fixed;
       top: 20px;
@@ -57,62 +66,15 @@
       transform: scale(1.1);
     }
 
-    .toggle-btn.add_dashboard_menu {
-      background-color: #dc3545;
-    }
-
-    .toggle-btn span {
-      font-size: 20px;
-    }
-
-    /* Add Product Section */
-    .add-product-section {
-      display: flex;
-      flex-direction: column;
-      margin-top: 20px;
-    }
-
-    .add-product-section input,
-    .add-product-section select,
-    .add-product-section button {
-      width: 100%;
-      margin: 10px 0;
-      padding: 12px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      background-color: #f9f9f9;
-      font-size: 16px;
-    }
-
-    .add-product-section button {
-      background-color: #28A745;
-      color: white;
-      cursor: pointer;
-      border: none;
-    }
-
-    .add-product-section input:focus,
-    .add-product-section select:focus {
-      outline: none;
-      border-color: #28A745;
-    }
-
-    .product-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 30px;
-      margin-top: 100px;
-      padding: 20px;
-      justify-content: center;
-    }
-
+    /* Product Card Styling */
     .product-card {
       background-color: white;
       border-radius: 10px;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 280px;
+      width: 100%;
+      max-width: 280px;
       padding: 20px;
-      margin: 20px;
+      margin: 10px;
       position: relative;
       text-align: center;
       display: flex;
@@ -142,23 +104,56 @@
       border-radius: 8px;
     }
 
+    /* Product Information Styling */
     .product-card h3,
     .product-card p {
-      font-size: 18px;
+      font-size: 16px;
       color: #333;
       margin-bottom: 10px;
     }
 
-    /* Make product card images responsive */
     .slider img {
       max-height: 250px;
     }
 
-    /* Mobile styles */
+    .add-product-section input,
+    .add-product-section select,
+    .add-product-section button {
+      width: 100%;
+      margin: 10px 0;
+      padding: 12px;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+      font-size: 16px;
+      outline: none;
+    }
+
+    .add-product-section input:focus,
+    .add-product-section select:focus {
+      border-color: #28A745;
+    }
+
+    .add-product-section button {
+      background-color: #28A745;
+      color: white;
+      cursor: pointer;
+      border: none;
+      margin-top: 20px;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 12px;
+      margin-bottom: 10px;
+    }
+
+    /* Mobile Styles */
     @media (max-width: 768px) {
-      .product-card {
-        width: 100%;
-        margin: 10px;
+      .toggle-btn {
+        top: 10px;
+        right: 10px;
+        padding: 15px 25px;
       }
 
       .product-container {
@@ -166,27 +161,14 @@
         padding: 10px;
       }
 
-      .admin-section {
-        width: 100%;
-        right: -100%;
-      }
-
-      .admin-section.open {
-        right: 0;
-      }
-
-      .toggle-btn {
-        top: 10px;
-        right: 10px;
-        padding: 15px 25px;
-      }
-
-      .add-product-section {
-        padding: 15px;
+      .add-product-section input,
+      .add-product-section select,
+      .add-product-section button {
+        font-size: 14px;
+        padding: 10px;
       }
     }
 
-    /* Preview Images Styling */
     .preview-images {
       display: flex;
       gap: 10px;
@@ -210,43 +192,46 @@
   </style>
 </head>
 <body>
+  <div class="container">
+    <!-- Toggle button to show/hide the admin section -->
+    <button class="toggle-btn" onclick="toggleAdminSection()">
+      <span id="toggle-text">You</span>
+    </button>
 
-  <!-- Toggle button to show/hide the admin section -->
-  <button class="toggle-btn" onclick="toggleAdminSection()">
-    <span id="toggle-text">Admin Panel</span>
-  </button>
+    <!-- Admin Add Product Section -->
+    <div class="admin-section" id="admin-section">
+      <h2>Add New Product</h2>
+      <div class="add-product-section">
+        <input type="text" id="product-name" placeholder="Product Name" required>
+        <div id="name-error" class="error-message"></div>
 
-  <!-- Admin Add Product Section -->
-  <div class="admin-section" id="admin-section">
-    <h2>Add New Product</h2>
-    <div class="add-product-section">
-      <input type="text" id="product-name" placeholder="Product Name" required>
-      <input type="number" id="product-price" placeholder="Product Price" required>
-      
-      <!-- Category Selection -->
-      <select id="product-category" required>
-        <option value="">Select Category</option>
-        <option value="Electronics">Electronics</option>
-        <option value="Fashion">Fashion</option>
-        <option value="Home">Home</option>
-        <option value="Books">Books</option>
-        <option value="Other">Other</option>
-      </select>
+        <input type="number" id="product-price" placeholder="Product Price" required>
+        <div id="price-error" class="error-message"></div>
 
-      <!-- Image Upload Section -->
-      <label for="image-input">Upload Images:</label>
-      <input type="file" id="image-input" multiple accept="image/*">
-      
-      <!-- Preview Section -->
-      <div class="preview-images" id="image-preview"></div>
+        <select id="product-category" required>
+          <option value="">Select Category</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Fashion">Fashion</option>
+          <option value="Home">Home</option>
+          <option value="Books">Books</option>
+          <option value="Other">Other</option>
+        </select>
+        <div id="category-error" class="error-message"></div>
 
-      <button onclick="addProduct()">Add Product</button>
+        <label for="image-input">Upload Images:</label>
+        <input type="file" id="image-input" multiple accept="image/*">
+        
+        <div class="preview-images" id="image-preview"></div>
+        <div id="image-error" class="error-message"></div>
+
+        <button onclick="addProduct()">Add Product</button>
+      </div>
     </div>
-  </div>
 
-  <!-- Display Created Products -->
-  <h2>All Created Products</h2>
-  <div class="product-container" id="product-container"></div>
+    <!-- Display Created Products -->
+    <h2>All Created Products</h2>
+    <div class="product-container" id="product-container"></div>
+  </div>
 
   <script>
     let imageFiles = [];
@@ -254,55 +239,75 @@
     const previewContainer = document.getElementById('image-preview');
     const productContainer = document.getElementById('product-container');
     const categorySelect = document.getElementById('product-category');
-    const adminSection = document.getElementById('admin-section');
-    const toggleBtn = document.querySelector('.toggle-btn');
-    const toggleText = document.getElementById('toggle-text');
-
-    // Function to toggle visibility of the admin section
+    const nameInput = document.getElementById('product-name');
+    const priceInput = document.getElementById('product-price');
+    
+    // Toggle admin section visibility
     function toggleAdminSection() {
+      const adminSection = document.getElementById('admin-section');
       adminSection.classList.toggle('open');
-      if (adminSection.classList.contains('open')) {
-        toggleBtn.classList.add('close');
-        toggleText.textContent = 'Close';
-      } else {
-        toggleBtn.classList.remove('close');
-        toggleText.textContent = 'Admin';
-      }
+      const toggleText = document.getElementById('toggle-text');
+      toggleText.textContent = adminSection.classList.contains('open') ? 'X' : 'You';
     }
 
-    // Function to handle image uploads and preview them
-    imageInput.addEventListener('change', () => {
-      previewContainer.innerHTML = ""; 
+    // Image preview functionality
+    imageInput.addEventListener('change', (e) => {
+      const files = e.target.files;
+      previewContainer.innerHTML = '';
       imageFiles = [];
-      
-      const files = Array.from(imageInput.files);
-      files.forEach(file => {
+
+      Array.from(files).forEach(file => {
         const reader = new FileReader();
-        reader.onload = () => {
+        reader.onload = (event) => {
           const img = document.createElement('img');
-          img.src = reader.result;
+          img.src = event.target.result;
           previewContainer.appendChild(img);
-          imageFiles.push(reader.result);
+          imageFiles.push(event.target.result);
         };
         reader.readAsDataURL(file);
       });
     });
 
-    // Function to add a new product
+    // Form validation and adding product
     function addProduct() {
-      const name = document.getElementById('product-name').value;
-      const price = document.getElementById('product-price').value;
+      const name = nameInput.value;
+      const price = priceInput.value;
       const category = categorySelect.value;
-      
-      if (!name || !price || !category || imageFiles.length === 0) {
-        alert("Please fill all the fields and upload images.");
-        return;
+
+      let isValid = true;
+
+      // Reset error messages
+      document.getElementById('name-error').textContent = '';
+      document.getElementById('price-error').textContent = '';
+      document.getElementById('category-error').textContent = '';
+      document.getElementById('image-error').textContent = '';
+
+      if (!name) {
+        document.getElementById('name-error').textContent = 'Please enter a product name.';
+        isValid = false;
       }
+
+      if (!price || price <= 0) {
+        document.getElementById('price-error').textContent = 'Please enter a valid product price.';
+        isValid = false;
+      }
+
+      if (!category) {
+        document.getElementById('category-error').textContent = 'Please select a category.';
+        isValid = false;
+      }
+
+      if (imageFiles.length === 0) {
+        document.getElementById('image-error').textContent = 'Please upload at least one image.';
+        isValid = false;
+      }
+
+      if (!isValid) return;
 
       // Create product card
       const card = document.createElement('div');
       card.classList.add('product-card');
-      
+
       const cardName = document.createElement('h3');
       cardName.textContent = name;
       card.appendChild(cardName);
@@ -327,9 +332,9 @@
       card.appendChild(slider);
       productContainer.appendChild(card);
 
-      // Reset form after product is added
-      document.getElementById('product-name').value = '';
-      document.getElementById('product-price').value = '';
+      // Reset form after adding product
+      nameInput.value = '';
+      priceInput.value = '';
       categorySelect.value = '';
       imageInput.value = '';
       previewContainer.innerHTML = '';
