@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stylish Multi-Page Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .form-container {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      width: 90%;
+      max-width: 500px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .form-container h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .form-page {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .form-page.active {
+      display: block;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #007bff;
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      background-color: #007bff;
+      color: white;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .btn:disabled {
+      background-color: #ccc;
+    }
+
+    .btn-container .btn:last-child {
+      margin-left: auto;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Multi-Page Registration</h2>
+    <form id="multiPageForm">
+      <!-- Page 1 -->
+      <div class="form-page active" id="page-1">
+        <div class="form-group">
+          <label for="ownerName">Owner Name</label>
+          <input type="text" id="ownerName" placeholder="Enter your name" required>
+        </div>
+        <div class="form-group">
+          <label for="phoneNumber">Phone Number</label>
+          <input type="tel" id="phoneNumber" placeholder="Enter your phone number" required pattern="^[0-9]{10}$">
+        </div>
+      </div>
+
+      <!-- Page 2 -->
+      <div class="form-page" id="page-2">
+        <div class="form-group">
+          <label for="bankName">Bank Name</label>
+          <input type="text" id="bankName" placeholder="Enter bank name" required>
+        </div>
+        <div class="form-group">
+          <label for="accountNumber">Account Number</label>
+          <input type="text" id="accountNumber" placeholder="Enter account number" required>
+        </div>
+        <div class="form-group">
+          <label for="ifscCode">IFSC Code</label>
+          <input type="text" id="ifscCode" placeholder="Enter IFSC code" required pattern="^[A-Za-z]{4}[0-9]{7}$">
+        </div>
+      </div>
+
+      <!-- Page 3 -->
+      <div class="form-page" id="page-3">
+        <div class="form-group">
+          <label for="aadhar">Aadhar Number</label>
+          <input type="text" id="aadhar" placeholder="Enter Aadhar number (xxxx-xxxx-xxxx)" required pattern="^[0-9]{4}-[0-9]{4}-[0-9]{4}$">
+        </div>
+        <div class="form-group">
+          <label for="pan">PAN Number</label>
+          <input type="text" id="pan" placeholder="Enter PAN number" required pattern="^[A-Z]{5}[0-9]{4}[A-Z]{1}$">
+        </div>
+      </div>
+
+      <!-- Navigation Buttons -->
+      <div class="btn-container">
+        <button type="button" class="btn" id="prevBtn" disabled>Previous</button>
+        <button type="button" class="btn" id="nextBtn">Next</button>
+        <button type="submit" class="btn" id="submitBtn" style="display: none;">Submit</button>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const pages = document.querySelectorAll('.form-page');
+    const nextBtn = document.getElementById('nextBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('multiPageForm');
+    let currentPage = 0;
+
+    function showPage(index) {
+      pages.forEach((page, i) => {
+        page.classList.toggle('active', i === index);
+      });
+      prevBtn.disabled = index === 0;
+      nextBtn.style.display = index < pages.length - 1 ? 'inline-block' : 'none';
+      submitBtn.style.display = index === pages.length - 1 ? 'inline-block' : 'none';
+    }
+
+    nextBtn.addEventListener('click', () => {
+      const inputs = pages[currentPage].querySelectorAll('input');
+      let valid = true;
+      inputs.forEach(input => {
+        if (!input.checkValidity()) {
+          valid = false;
+          input.reportValidity();
+        }
+      });
+      if (valid) {
+        currentPage++;
+        showPage(currentPage);
+      }
+    });
+
+    prevBtn.addEventListener('click', () => {
+      currentPage--;
+      showPage(currentPage);
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      alert('Form submitted successfully!');
+      form.reset();
+      currentPage = 0;
+      showPage(currentPage);
+    });
+
+    showPage(currentPage);
+  </script>
+</body>
+</html>

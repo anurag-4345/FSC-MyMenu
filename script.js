@@ -44,7 +44,7 @@ function startQRScanner() {
         detectedURL = decodedText;
 
         // Validate if "mymenu" exists in the scanned text (case-insensitive)
-        if (/mymenu/i.test(decodedText)) {
+        if (/menu/i.test(decodedText)) {
           resultDisplay.textContent = `Decoded Text: ${decodedText}`;
           errorDisplay.textContent = "";
 
@@ -118,7 +118,7 @@ function startProgressBar() {
       setTimeout(() => {
         successPopup.style.display = "block";
         // Execute URL with user details
-        const url = `https://my.menu.com?name=${encodeURIComponent(nameField.value)}&phone=${encodeURIComponent(phoneField.value)}&URL=${encodeURIComponent(detectedURL)}`;
+        const url = `https://menu.com?name=${encodeURIComponent(nameField.value)}&phone=${encodeURIComponent(phoneField.value)}&URL=${encodeURIComponent(detectedURL)}`;
         console.log(`Executed URL: ${url}`);
       }, 500);
     }

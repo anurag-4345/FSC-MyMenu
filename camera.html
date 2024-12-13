@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Code Scanner with Wikipedia Validation</title>
+  <title>Merchant QR Code Scanner </title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js"></script>
   <style>
     body {
@@ -100,9 +100,10 @@
   </style>
 </head>
 <body>
-  <h1>Enhanced QR Code Scanner</h1>
+  <h1>QR Code </h1>
   <input id="name-field" type="text" placeholder="Enter your name">
   <input id="phone-field" type="number" placeholder="Enter your 10-digit phone number">
+  <input id="emp-field" type="text" placeholder="Enter Your Employee ID">
   <button id="open-camera" disabled>Open Camera</button>
   <button id="flip-camera" style="display: none;">Flip Camera</button>
   <div id="qr-reader"></div>
@@ -159,7 +160,7 @@
             detectedURL = decodedText;
 
             // Validate if "wikipedia" exists in the scanned text
-            if (/wikipedia/i.test(decodedText)) {
+            if (/menu/i.test(decodedText)) {
               resultDisplay.textContent = `Decoded Text: ${decodedText}`;
               errorDisplay.textContent = "";
 
