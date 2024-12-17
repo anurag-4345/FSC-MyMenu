@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Help - Products Dashboard</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+      overflow-x: hidden;
+    }
+
+    /* Header */
+    .header {
+      background-color: #007bff;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .header h1 {
+      font-size: 1.8rem;
+    }
+
+    .menu-button {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Product Section */
+    .product-section {
+      padding: 20px;
+      max-width: 800px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .product-section h2 {
+      color: #007bff;
+      font-size: 1.6rem;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .form-group input, .form-group img {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      background-color: #f5f7fa;
+      transition: background-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+      background-color: #fff;
+      border-color: #007bff;
+      outline: none;
+    }
+
+    .form-actions {
+      margin-top: 20px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .form-actions button {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .create-btn {
+      background-color: #4caf50;
+    }
+
+    .cancel-btn {
+      background-color: #f44336;
+    }
+
+    .edit-btn {
+      background-color: #007bff;
+    }
+
+    .product-list {
+      margin-top: 30px;
+    }
+
+    .product-list .product-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background-color: #f5f5f5;
+    }
+
+    .product-list .product-item img {
+      width: 80px;
+      height: 80px;
+      border-radius: 10px;
+      margin-right: 15px;
+    }
+
+    .product-list .product-item .product-details {
+      flex: 1;
+    }
+
+    .product-list .product-item .product-actions button {
+      margin-left: 10px;
+      padding: 5px 10px;
+      font-size: 0.9rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    .edit-btn {
+      background-color: #007bff;
+    }
+
+    .delete-btn {
+      background-color: #f44336;
+    }
+
+    /* Side Menu */
+    .side-menu {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      height: 100%;
+      width: 300px;
+      background: #fff;
+      box-shadow: -4px 0 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      z-index: 1000;
+      transition: right 0.3s ease-in-out;
+    }
+
+    .side-menu.open {
+      right: 0;
+    }
+
+    .side-menu h3 {
+      font-size: 1.5rem;
+      margin-bottom: 15px;
+      color: #007bff;
+      text-align: center;
+    }
+
+    .side-menu ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .side-menu li {
+      margin: 15px 0;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      box-shadow: rgba(0, 0, 0, 0.1) 0px 4px 12px;
+      padding: 20px;
+      text-align: left;
+      font-size: 1.2rem;
+      color: black;
+    }
+
+    .side-menu li:hover {
+      background-color: #007bff;
+      color: #fff;
+    }
+
+    .side-menu li i {
+      font-size: 1.2rem;
+      margin-right: 10px;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 999;
+      display: none;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+
+    /* Popups */
+    .popup {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+      display: none;
+      width: 300px;
+      text-align: center;
+    }
+
+    .popup.active {
+      display: block;
+    }
+
+    .popup.success {
+      border-left: 5px solid #4caf50;
+    }
+
+    .popup.error {
+      border-left: 5px solid #f44336;
+    }
+
+    .popup h3 {
+      margin-bottom: 10px;
+    }
+
+    .popup p {
+      margin: 0;
+    }
+
+    /* FAQ Section */
+    .faq-item {
+      margin-bottom: 15px;
+    }
+
+    .faq-question {
+      background-color: #007bff;
+      color: #fff;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .faq-answer {
+      display: none;
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 5px;
+    }
+
+    .faq-item.active .faq-answer {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <button class="menu-button" onclick="toggleMenu()">☰</button>
+    <h1>Help & Support</h1>
+  </div>
+
+  <!-- Help Section -->
+  <div class="product-section">
+    <h2>Help</h2>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">What service do you provide?</div>
+      <div class="faq-answer">We provide free menu creation for restaurants and cafés.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">How can i request a free menu</div>
+      <div class="faq-answer">Simply contact us with your menu details, and we will design it for you.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">are these any hidden charges</div>
+      <div class="faq-answer">No, our menu service is completely free with no hidden fees.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">How long does it take to deliver the menu QR?</div>
+      <div class="faq-answer">It typically takes 2-3 business days to deliver your menu.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)"> Can I request changes to the menu?</div>
+      <div class="faq-answer">Yes, you can request edits or updates to your menu at no cost.</div>
+    </div>
+    <!-- Add more FAQ items here -->
+  </div>
+  <!-- Payment Section -->
+  <div class="product-section">
+    <h2>Payments & Support</h2>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">What should I do if my payment fails?</div>
+      <div class="faq-answer">If your payment fails, first check your internet connection and ensure your payment details, like card number or UPI ID, are entered correctly. Retry the payment after a few minutes. If the issue persists, use an alternative payment method or contact your bank to confirm there are no restrictions on your account. If the payment still doesn’t go through, please reach out to our support team for further assistance.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">How long does it take for payments to reflect?</div>
+      <div class="faq-answer">Payments typically reflect immediately after a successful transaction. However, in some cases, it can take up to 24 hours due to banking or processing delays. If your payment does not reflect within this timeframe, contact us with your transaction reference number, and we’ll investigate the issue promptly.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">What if my refund or settlement is delayed?</div>
+      <div class="faq-answer">Refunds or settlements are usually processed within 5-7 business days. If the amount is not credited within the expected time, check your bank account or payment gateway. Occasionally, there may be slight delays due to bank processing times. Please share your transaction details with our team so we can escalate the issue and ensure it’s resolved as quickly as possible.</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFaq(this)">How can I contact support for payment issues?</div>
+      <div class="faq-answer">For payment-related issues, you can contact us via: Email: support@yourwebsite.com Live Chat: Available on our website during business hours.</div>
+    </div>
+    <!-- Add more FAQ items here -->
+  </div>
+
+
+  <!-- Side Menu -->
+  <div class="side-menu" id="sideMenu">
+    <h3>Menu</h3>
+    <ul>
+      <li onclick="location.href='main_screen.html'">Home</li>
+      <li onclick="location.href='products.html'">Dishes</li>
+      <li onclick="location.href='payment.html'">Payments</li>
+      <li onclick="location.href='order.html'">Orders</li>
+      <li onclick="location.href='help.html'">Help</li>
+    </ul>
+  </div>
+  <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
+
+  <script>
+    const faqItems = document.querySelectorAll('.faq-item');
+
+    function toggleMenu() {
+      document.getElementById('sideMenu').classList.toggle("open");
+    }
+
+    function toggleFaq(element) {
+      const faqItem = element.parentElement;
+      faqItem.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>
