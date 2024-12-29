@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Store Registration</title>
+  <link rel="stylesheet" href="css/owner_reis.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to top, #08b408,#48ff00);
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .form-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-width: 400px; 
+      width: 100%;
+      box-sizing: border-box;
+      height: 90vh;
+      position: relative;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+    .form-group {
+      margin-bottom: 15px;
+      position: relative;
+    }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #555;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-chevron-down" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"/></svg>') no-repeat right 10px center;
+      background-size: 16px 16px;
+    }
+    .form-group select {
+      background-color: #fff;
+      color: #555;
+      cursor: pointer;
+    }
+    .form-group select:focus {
+      border-color: #ff7e5f;
+      box-shadow: 0 0 5px rgba(255, 126, 95, 0.5);
+    }
+    .form-group .tooltip {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      background: #ff7e5f;
+      color: #fff;
+      padding: 5px;
+      border-radius: 5px;
+      font-size: 12px;
+      display: none;
+    }
+    .form-group:hover .tooltip {
+      display: block;
+    }
+    .btn-container {
+      text-align: center;
+      padding-top: 20px;
+      /* position: fixed;
+      bottom: 100px; */
+      /* left: 50%; */
+      transform: translateX(-50%);
+      width: 100%;
+    }
+    .btn {
+        background: #2ca928;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 80vw;
+    height: 39px;
+    font-size: 1.2rem;
+    }
+    .btn:hover {
+      background: #feb47b;
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="form-container">
+    <h2>Register Your Store</h2>
+    <h3>Store Details</h3>
+    <form id="storeForm">
+      <div class="form-group">
+        <label for="storeName">Store Name</label>
+        <input type="text" id="storeName" placeholder="Enter store name" required>
+        <span class="tooltip">Enter the name of your store</span>
+      </div>
+      <div class="form-group">
+        <label for="street">Street</label>
+        <input type="text" id="street" placeholder="Enter street" required>
+        <span class="tooltip">Enter the street address</span>
+      </div>
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" placeholder="Enter city" required>
+        <span class="tooltip">Enter the city</span>
+      </div>
+      <div class="form-group">
+        <label for="state">State</label>
+        <input type="text" id="state" placeholder="Enter state" required>
+        <span class="tooltip">Enter the state</span>
+      </div>
+      <div class="form-group">
+        <label for="pin">PIN Code</label>
+        <input type="text" id="pin" placeholder="Enter PIN code" required>
+        <span class="tooltip">Enter the PIN code</span>
+      </div>
+      <div class="form-group">
+        <label for="numberOfProducts">Number of Products</label>
+        <select id="numberOfProducts" required>
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+        <span class="tooltip">Select the number of products</span>
+      </div>
+      <div class="form-group">
+        <label for="priceRange">Price Range</label>
+        <select id="priceRange" required>
+          <option value="100-300">₹100-₹300</option>
+          <option value="300-700">₹300-₹700</option>
+          <option value="700-1500">₹700-₹1500</option>
+          <option value="1000-5000">₹1000-₹5000</option>
+        </select>
+        <span class="tooltip">Select the price range</span>
+    </div>
+    <button type="submit" class="btn" form="storeForm">Submit</button>
+      <input type="hidden" id="storeStatus" value="active">
+    </form>
+    <!-- <div class="btn-container">
+    </div> -->
+  </div>
+<script src="js/store_reg.js"></script>
+</body>
+</html>

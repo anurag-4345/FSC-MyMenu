@@ -4,105 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Stylish Multi-Page Form</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-
-    .form-container {
-      background: #fff;
-      border-radius: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      width: 78%;
-      max-width: 500px;
-      padding: 20px;
-      position: relative;
-      overflow: hidden;
-      height: 75%;
-    }
-
-    .form-container h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333;
-    }
-
-    .form-page {
-      display: none;
-      animation: fadeIn 0.5s ease;
-    }
-
-    .form-page.active {
-      display: block;
-    }
-
-    .form-group {
-      margin-bottom: 20px;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: bold;
-      margin-bottom: 5px;
-      color: #555;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      box-sizing: border-box;
-    }
-
-    .form-group input:focus {
-      outline: none;
-      border-color: #007bff;
-    }
-
-    .btn-container {
-      display: flex;
-      justify-content: space-between;
-      position: relative;
-    top: 240px;
-    }
-
-    .btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      font-size: 1rem;
-      width: 150px;
-      margin: 0 10px;
-    }
-
-    .btn:disabled {
-      background-color: #ccc;
-    }
-
-    .btn-container .btn:last-child {
-      margin-left: auto;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="css/owner_reis.css">
 </head>
 <body>
   
@@ -119,6 +21,11 @@
           <label for="phoneNumber">Phone Number</label>
           <input type="tel" id="phoneNumber" placeholder="Enter your phone number" required pattern="^[0-9]{10}$">
         </div>
+        <div class="form-group">
+          <label for="otp" style="display: none;">OTP</label>
+          <input type="text" id="otp" placeholder="Enter OTP" required pattern="^[0-6]{6}$" style="display: none;">
+        </div>
+        <button type="button" class="btn" id="verifyBtn" style="display: none;">Verify</button>
       </div>
 
       <!-- Page 2 -->
@@ -155,106 +62,35 @@
 
       <!-- Navigation Buttons -->
       <div class="btn-container">
-        <button type="button" class="btn" id="prevBtn" disabled>Previous</button>
+        <button type="button" class="btn" id="prevBtn" style="display: none;">Previous</button>
         <button type="button" class="btn" id="nextBtn">Next</button>
         <button type="submit" class="btn" id="submitBtn" style="display: none;">Submit</button>
       </div>
     </form>
   </div>
-
-  <script>
-    const pages = document.querySelectorAll('.form-page');
-    const nextBtn = document.getElementById('nextBtn');
-    const prevBtn = document.getElementById('prevBtn');
-    const submitBtn = document.getElementById('submitBtn');
-    const form = document.getElementById('multiPageForm');
-    let currentPage = 0;
-
-    function showPage(index) {
-      pages.forEach((page, i) => {
-        page.classList.toggle('active', i === index);
-      });
-      prevBtn.disabled = index === 0;
-      nextBtn.style.display = index < pages.length - 1 ? 'inline-block' : 'none';
-      submitBtn.style.display = index === pages.length - 1 ? 'inline-block' : 'none';
+<script src="js/owner_reg.js"></script>
+<script>
+  document.getElementById('phoneNumber').addEventListener('blur', function() {
+    const ownerName = document.getElementById('ownerName').value;
+    const phoneNumber = document.getElementById('phoneNumber').value;
+    if (ownerName && phoneNumber) {
+      // Simulate API call
+      localStorage.setItem('ownerName', ownerName);
+      localStorage.setItem('phoneNumber', phoneNumber);
+      document.querySelector('label[for="otp"]').style.display = 'block';
+      document.getElementById('otp').style.display = 'block';
+      document.getElementById('verifyBtn').style.display = 'block';
     }
+  });
 
-    nextBtn.addEventListener('click', () => {
-      const inputs = pages[currentPage].querySelectorAll('input');
-      let valid = true;
-      inputs.forEach(input => {
-        if (!input.checkValidity()) {
-          valid = false;
-          input.reportValidity();
-        }
-      });
-
-      if (currentPage === 1) {
-        const account = document.getElementById('accountNumber').value;
-        const reAccount = document.getElementById('reAccountNumber').value;
-        if (account !== reAccount) {
-          alert('Account numbers do not match. Please re-enter.');
-          valid = false;
-        }
-      }
-
-      if (valid) {
-        currentPage++;
-        showPage(currentPage);
-      }
-    });
-
-    prevBtn.addEventListener('click', () => {
-      currentPage--;
-      showPage(currentPage);
-    });
-
-    form.addEventListener('submit', (e) => {
-      e.preventDefault();
-
-      const data = {
-        name: document.getElementById('ownerName').value,
-        phoneNumber: document.getElementById('phoneNumber').value,
-        bankName: document.getElementById('bankName').value,
-        accountNumber: document.getElementById('accountNumber').value,
-        ifscCode: document.getElementById('ifscCode').value,
-        aadhar: document.getElementById('aadhar').value,
-        pan: document.getElementById('pan').value,
-        ownerStatus:"active"
-      };
-
-      fetch('https://backend-mymenu.onrender.com/api/owners', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      })
-      .then(response => {
-      if (response.ok) {
-        return response.json(); // Parse response JSON
-      } else {
-        return response.json().then(error => {
-          throw new Error(error.message || 'Failed to submit form.');
-        });
-      }
-    })
-    .then(responseData => {
-      // Save ownerId in localStorage
-      localStorage.setItem('ownerId', responseData._id); // Assuming `responseData._id` contains the owner ID
-      form.reset();
-      window.location.href = "./store.html"
-
-      // Optional: Redirect to another page
-      // window.location.href = 'your-next-page.html';
-    })
-        .catch(error => {
-          console.error('Error:', error);
-          alert('Error submitting form.');
-        });
-    });
-
-    showPage(currentPage);
-  </script>
+  document.getElementById('verifyBtn').addEventListener('click', function() {
+    const otp = document.getElementById('otp').value;
+    if (otp) {
+      // Simulate OTP verification
+      alert('OTP Verified');
+      document.getElementById('nextBtn').disabled = false;
+    }
+  });
+</script>
 </body>
 </html>
