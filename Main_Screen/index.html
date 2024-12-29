@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My-Menu QR Scanner</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html5-qrcode/2.3.8/html5-qrcode.min.js" defer></script>
+</head>
+<body>
+  <h1>My-Menu QR Scanner</h1>
+  <div class="input-container">
+    <input id="name-field" type="text" placeholder="Enter your name" />
+    <input id="phone-field" type="number" placeholder="Enter your 10-digit phone number" />
+  </div>
+
+  <div class="button-container">
+    <button id="open-camera" disabled>Open Camera</button>
+    <button id="flip-camera" style="display: none;">Flip Camera</button>
+  </div>
+
+  <div id="qr-reader"></div>
+
+  <p id="result">Scan a QR code to see its URL.</p>
+  <p id="error"></p>
+
+  <div id="json-display"></div>
+ <!--
+  <button id="set-url" style="display: none;">Set URL</button>
+ -->
+  <!-- Error Popup -->
+  <div id="popup">
+    <p>Invalid QR Code! Only My-Menu QR code is allowed.</p>
+    <button id="close-popup">Close</button>
+  </div>
+
+  <!-- Success Popup -->
+  <div onclick="location.reload();" id="success-popup" style="display: none; width:400px; height:700; padding:20px;">
+  <p>QR Code Set Successfully, click anywhere </p>
+ </div>
+  
+  <!-- Proceed Merchant Button -->
+  <button id="proceed-button" style="display: none;">Proceed Merchant</button>
+
+  <!-- Progress Bar -->
+  <div id="progress-bar-container" style="display: none;">
+    <div id="progress-bar"></div>
+  </div>
+
+  <!-- User Information Table -->
+  <div id="user-info-table" style="display: none;">
+    <h2>User Details</h2>
+    <table>
+      <tr>
+        <th>Name</th>
+        <th>Phone Number</th>
+        <th>QR Code Content</th>
+      </tr>
+      <tr>
+        <td id="user-name"></td>
+        <td id="user-phone"></td>
+        <td id="user-qr-content"></td>
+      </tr>
+    </table>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
