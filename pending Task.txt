@@ -1,0 +1,7 @@
+pending Task
+
+Home screen 
+account screen
+QR screen
+History screen 
+Product screen (makes Mockup and code)

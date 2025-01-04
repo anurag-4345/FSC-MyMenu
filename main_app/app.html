@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Store Payment</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+      }
+
+      body {
+        background: #f5f5f5;
+      }
+
+      .app {
+        max-width: 400px;
+        margin: 0 auto;
+        background: white;
+        min-height: 100vh;
+        position: relative;
+      }
+
+      .header {
+        background: #4caf50;
+        padding: 15px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .help-btn {
+        background: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 15px;
+        color: #333;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      .content {
+        padding: 15px;
+        padding-bottom: 70px;
+        overflow-y: auto;
+      }
+
+      .card {
+        background: white;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #eee;
+      }
+
+      .store-details .row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .store-details .row:last-child {
+        border-bottom: none;
+      }
+
+      .edit-btn {
+        background: #f0f0f0;
+        border: none;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 13px;
+        color: #666;
+        cursor: pointer;
+      }
+
+      .payment-list {
+        list-style: none;
+      }
+
+      .payment-item {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideIn 0.3s ease-out;
+      }
+
+      .payment-item:last-child {
+        border-bottom: none;
+      }
+
+      .nav-bar {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        max-width: 400px;
+        display: flex;
+        background: white;
+        border-top: 1px solid #eee;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-item {
+        flex: 1;
+        padding: 12px 8px;
+        text-align: center;
+        color: #666;
+        text-decoration: none;
+        font-size: 14px;
+        transition: color 0.3s;
+      }
+
+      .nav-item.active {
+        color: #4caf50;
+        font-weight: 500;
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .tab-container {
+        display: flex;
+        margin-bottom: 15px;
+        background: #f5f5f5;
+        border-radius: 8px;
+        padding: 3px;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 10px;
+        text-align: center;
+        background: transparent;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: all 0.3s;
+        font-size: 14px;
+      }
+
+      .tab.active {
+        background: #4caf50;
+        color: white;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+        animation: fadeIn 0.3s ease-out;
+      }
+
+      .settlement-info {
+        background: #e3f2fd;
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        color: #1565c0;
+        font-size: 14px;
+      }
+
+      .qr-container {
+        text-align: center;
+      }
+
+      .qr-code {
+        width: 200px;
+        height: 200px;
+        margin: 20px auto;
+        border: 1px solid #eee;
+        padding: 10px;
+        border-radius: 10px;
+      }
+
+      .download-btn {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background 0.3s;
+      }
+
+      .download-btn:hover {
+        background: #43a047;
+      }
+
+      .total-amount {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 10px 0;
+        color: #333;
+      }
+
+      .payment-count {
+        color: #666;
+        font-size: 14px;
+        margin-bottom: 15px;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <span id="pageTitle">Store Payment</span>
+        <button class="help-btn">Help</button>
+      </header>
+
+      <!-- Store Page -->
+      <main class="content">
+        <section id="storePage" class="page active">
+          <div class="card">
+            <div class="payment-count">Today Collection: - 5 Payments</div>
+            <div class="total-amount">₹9100</div>
+            <div id="todayPayments" class="payment-list"></div>
+          </div>
+        </section>
+
+        <!-- QR Page -->
+        <section id="qrPage" class="page">
+          <div class="card qr-container">
+            <h3>Store Name</h3>
+            <img src="../list mockup.png" alt="QR Code" class="qr-code" />
+            <button onclick="downloadQR()" class="download-btn">
+              Download QR
+            </button>
+          </div>
+        </section>
+        <!-- Account Page -->
+        <section id="accountPage" class="page">
+          <div class="card store-details">
+            <div class="row">
+              <span>Name</span>
+              <button class="edit-btn">edit</button>
+            </div>
+            <div class="row">
+              <span>Address</span>
+              <button class="edit-btn">edit</button>
+            </div>
+            <div class="row">
+              <span>Phone</span>
+              <button class="edit-btn">edit</button>
+            </div>
+            <div class="row">
+              <span>Bank</span>
+              <button class="edit-btn">></button>
+            </div>
+          </div>
+        </section>
+        <!-- History Page -->
+        <section id="historyPage" class="page">
+          <div class="tab-container">
+            <div class="tab active" onclick="switchTab('transactions')">
+              Transactions
+            </div>
+            <div class="tab" onclick="switchTab('settlement')">Settlement</div>
+          </div>
+
+          <div id="transactionsTab" class="tab-content active">
+            <div class="settlement-info">
+              Next Payment settlement to be credit by 11 PM, Tomorrow
+            </div>
+            <div class="payment-list">
+              <div class="payment-item">
+                <span>Last payment (1/2/2024)</span>
+                <span>₹9000</span>
+              </div>
+              <div class="payment-item">
+                <span>Dec 20/12/2024</span>
+                <span>₹9000</span>
+              </div>
+              <div class="payment-item">
+                <span>Dec 19/12/2024</span>
+                <span>₹1000</span>
+              </div>
+              <div class="payment-item">
+                <span>Dec 18/12/2024</span>
+                <span>₹1000</span>
+              </div>
+            </div>
+          </div>
+          <div id="settlementTab" class="tab-content">
+            <div class="card">
+              <h3>Today Payment</h3>
+              <div class="total-amount">₹9100</div>
+              <p class="payment-count">5 Transactions</p>
+              <p class="settlement-info">
+                Settlement to be credited 11 AM Tomorrow
+              </p>
+              <div id="settlementPayments" class="payment-list"></div>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <nav class="nav-bar">
+        <a href="#" class="nav-item active" onclick="showPage('store')">Home</a>
+        <a href="#" class="nav-item" onclick="showPage('qr')">QR</a>
+        <a href="#" class="nav-item" onclick="showPage('account')">Account</a>
+        <a href="#" class="nav-item" onclick="showPage('history')">History</a>
+      </nav>
+    </div>
+
+    <script>
+      const state = {
+        currentPage: "store",
+        currentTab: "transactions",
+        storeDetails: {
+          name: "Store Name",
+          address: "",
+          phone: "",
+          bank: "",
+        },
+        payments: [
+          {
+            id: 1,
+            name: "vikas",
+            time: "7:20PM",
+            amount: 1000,
+            dishes: 5,
+            date: "2024-01-02",
+          },
+          {
+            id: 2,
+            name: "vikas",
+            time: "7:20PM",
+            amount: 1000,
+            dishes: 5,
+            date: "2024-01-02",
+          },
+          {
+            id: 3,
+            name: "vikas",
+            time: "7:20PM",
+            amount: 1000,
+            dishes: 5,
+            date: "2024-01-02",
+          },
+          {
+            id: 4,
+            name: "vikas",
+            time: "7:20PM",
+            amount: 1000,
+            dishes: 5,
+            date: "2024-01-02",
+          },
+          {
+            id: 5,
+            name: "vikas",
+            time: "7:20PM",
+            amount: 1000,
+            dishes: 5,
+            date: "2024-01-02",
+          },
+        ],
+        transactions: [
+          { date: "2024-01-02", amount: 9000, type: "Last payment" },
+          { date: "2024-12-20", amount: 9000, type: "Settlement" },
+          { date: "2024-12-19", amount: 1000, type: "Payment" },
+          { date: "2024-12-18", amount: 1000, type: "Payment" },
+        ],
+      };
+
+      function showPage(page) {
+        state.currentPage = page;
+        document
+          .querySelectorAll(".page")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((item) => item.classList.remove("active"));
+
+        const pages = {
+          store: {
+            id: "storePage",
+            title: "Store Details",
+            render: renderTodayPayments,
+          },
+          qr: { id: "qrPage", title: "Store QR" },
+          account: { id: "accountPage", title: "Account Details" },
+          history: {
+            id: "historyPage",
+            title: "Payment History",
+            render: renderHistoryPage,
+          },
+        };
+
+        const pageConfig = pages[page];
+        if (pageConfig) {
+          document.getElementById(pageConfig.id).classList.add("active");
+          document
+            .querySelector(`.nav-item[onclick="showPage('${page}')"]`)
+            .classList.add("active");
+          document.getElementById("pageTitle").textContent = pageConfig.title;
+          if (pageConfig.render) pageConfig.render();
+        }
+      }
+
+      function switchTab(tab) {
+        state.currentTab = tab;
+        document
+          .querySelectorAll(".tab")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((c) => c.classList.remove("active"));
+
+        const tabElements = {
+          transactions: { tab: ".tab:first-child", content: "transactionsTab" },
+          settlement: { tab: ".tab:last-child", content: "settlementTab" },
+        };
+
+        const config = tabElements[tab];
+        if (config) {
+          document.querySelector(config.tab).classList.add("active");
+          document.getElementById(config.content).classList.add("active");
+        }
+      }
+
+      function renderTodayPayments() {
+        const container = document.getElementById("todayPayments");
+        const totalAmount = state.payments.reduce(
+          (sum, p) => sum + p.amount,
+          0
+        );
+
+        container.innerHTML = state.payments
+          .map(
+            (payment) => `
+                <div class="payment-item">
+                    <span>${payment.name} ${payment.time} - ${payment.dishes} dish</span>
+                    <span>₹${payment.amount}</span>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderHistoryPage() {
+        renderTransactions();
+        renderSettlementPayments();
+      }
+
+      function renderTransactions() {
+        const container = document.querySelector(
+          "#transactionsTab .payment-list"
+        );
+        container.innerHTML = state.transactions
+          .map(
+            (transaction) => `
+                <div class="payment-item">
+                    <span>${transaction.type} (${transaction.date})</span>
+                    <span>₹${transaction.amount}</span>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function renderSettlementPayments() {
+        const container = document.getElementById("settlementPayments");
+        const todayTotal = state.payments.reduce((sum, p) => sum + p.amount, 0);
+
+        container.innerHTML = state.payments
+          .map(
+            (payment) => `
+                <div class="payment-item">
+                    <span>${payment.name} ${payment.time}</span>
+                    <span>₹${payment.amount}</span>
+                </div>
+            `
+          )
+          .join("");
+      }
+
+      function downloadQR() {
+        alert("QR Code downloaded successfully!");
+      }
+
+      // Initialize app
+      showPage("store");
+      renderTodayPayments();
+    </script>
+  </body>
+</html>

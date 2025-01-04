@@ -1,0 +1,132 @@
+{
+  "starter": [
+    {
+      "name": "SandWhich-1",
+      "price": 1840,
+      "images": {
+        "primary": "https://media.istockphoto.com/",
+        "others": [
+          "https://media.istockphoto.com/",
+          "https://media.istockphoto.com/id"
+        ]
+      },
+      "productStatus": "active"
+    },
+    {
+      "name": "SandWhich-2",
+      "price": 1840,
+      "images": {
+        "primary": "https://media.istockphoto.com/",
+        "others": [
+          "https://media.istockphoto.com/",
+          "https://media.istockphoto.com/id"
+        ]
+      },
+      "productStatus": "active"
+    }
+  ],
+    "mainCourse": [
+        {
+        "name": "Paneer",
+        "price": 1840,
+        "images": {
+            "primary": "https://media.istockphoto.com/",
+            "others": [
+            "https://media.istockphoto.com/",
+            "https://media.istockphoto.com/id"
+            ]
+        },
+        "productStatus": "active"
+        },
+        {
+        "name": "Mix-veg",
+        "price": 1840,
+        "images": {
+            "primary": "https://media.istockphoto.com/",
+            "others": [
+            "https://media.istockphoto.com/",
+            "https://media.istockphoto.com/id"
+            ]
+        },
+        "productStatus": "active"
+        }
+    ],
+    "dessert": [
+        {
+        "name": "sweet",
+        "price": 1840,
+        "images": {
+            "primary": "https://media.istockphoto.com/",
+            "others": [
+            "https://media.istockphoto.com/",
+            "https://media.istockphoto.com/id"
+            ]
+        },
+        "productStatus": "active"
+        },
+        {
+        "name": "sweet-6",
+        "price": 1840,
+        "images": {
+            "primary": "https://media.istockphoto.com/",
+            "others": [
+            "https://media.istockphoto.com/",
+            "https://media.istockphoto.com/id"
+            ]
+        },
+        "productStatus": "active"
+        }
+    ],
+    "drinks": [
+        {
+        "name": "water bottle",
+        "price": 1840,
+        "images": {
+            "primary": "https://media.istockphoto.com/",
+            "others": [
+            "https://media.istockphoto.com/",
+            "https://media.istockphoto.com/id"
+            ]
+        },
+        "productStatus": "active"
+        },
+        {
+        "name": "pepsi",
+        "price": 1840,
+        "images": {
+            "primary": "https://media.istockphoto.com/",
+            "others": [
+            "https://media.istockphoto.com/",
+            "https://media.istockphoto.com/id"
+            ]
+        },
+        "productStatus": "active"
+        }
+    ],
+    "snacks": [
+        {
+        "name": "fry",
+        "price": 1840,
+        "images": {
+            "primary": "https://media.istockphoto.com/",
+            "others": [
+            "https://media.istockphoto.com/",
+            "https://media.istockphoto.com/id"
+            ]
+        },
+        "productStatus": "active"
+        },
+        {
+        "name": "fry-6",
+        "price": 1840,
+        "images": {
+            "primary": "https://media.istockphoto.com/",
+            "others": [
+            "https://media.istockphoto.com/",
+            "https://media.istockphoto.com/id"
+            ]
+        },
+        "productStatus": "active"
+        }
+    ]
+}

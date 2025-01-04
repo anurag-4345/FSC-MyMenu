@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Form</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="./css/registration.css" rel="stylesheet">
+    
+</head>
+<body>
+        <!-- Add loader overlay -->
+        <div class="loader-overlay">
+            <div class="loader"></div>
+        </div>                 
+    <div class="container">
+        <!-- Page 1: Phone Verification -->
+         <!-- Update Page 1 with OTP -->
+         <div class="form-page active" id="page1">
+            <h2 class="heading"><i class="fas fa-phone icon"></i>Phone Verification</h2>
+            <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="phoneNumber" required>
+            </div>
+            <div class="otp-container" style="display: none;">
+                <input type="text" maxlength="1" class="otp-input" data-index="1">
+                <input type="text" maxlength="1" class="otp-input" data-index="2">
+                <input type="text" maxlength="1" class="otp-input" data-index="3">
+                <input type="text" maxlength="1" class="otp-input" data-index="4">
+            </div>
+            <div class="buttons">
+                <button class="next-btn" onclick="sendOTP()">
+                    <span>Verify</span>
+                    <div class="api-loader" style="display: none;"></div>
+                </button>
+                <button class="retry-btn" onclick="retryAPI()" style="display: none;">Retry</button>
+            </div>
+        </div>
+
+        <!-- Page 2: Personal Details -->
+        <div class="form-page" id="page2">
+            <h2 class="heading"><i class="fas fa-user icon"></i>Personal Details</h2>
+            <div class="form-group">
+                <label>Name</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label>Date of Birth</label>
+                <input type="date" id="dob" required>
+            </div>
+            <div class="buttons">
+                <button class="back-btn" onclick="prevPage(2)">Back</button>
+                <button class="next-btn" onclick="nextPage(2)">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 3: Bank Details -->
+        <div class="form-page" id="page3">
+            <h2 class="heading"><i class="fas fa-university icon"></i>Bank Details</h2>
+            <div class="form-group">
+                <label>Bank Name</label>
+                <input type="text" id="bankName" required>
+            </div>
+            <div class="form-group">
+                <label>Account Number</label>
+                <input type="text" id="accountNumber" required>
+            </div>
+            <div class="form-group">
+                <label>Re-enter Account Number</label>
+                <input type="text" id="reAccountNumber" required>
+            </div>
+            <div class="form-group">
+                <label>IFSC Code</label>
+                <input type="text" id="ifscCode" required>
+            </div>
+            <div class="buttons">
+                <button class="back-btn" onclick="prevPage(3)">Back</button>
+                <button class="next-btn" onclick="nextPage(3)">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 4: ID Details -->
+        <div class="form-page" id="page4">
+            <h2 class="heading"><i class="fas fa-id-card icon"></i>ID Details</h2>
+            <div class="form-group">
+                <label>Aadhar Number</label>
+                <input type="text" id="aadhar" required>
+            </div>
+            <div class="form-group">
+                <label>PAN Number</label>
+                <input type="text" id="pan" required>
+            </div>
+            <div class="buttons">
+                <button class="back-btn" onclick="prevPage(4)">Back</button>
+                <button class="next-btn" onclick="submitOwnerDetails()">Submit</button>
+            </div>
+        </div>
+
+        <!-- Page 5: Store Details -->
+        <div class="form-page" id="page5">
+            <h2 class="heading"><i class="fas fa-store icon"></i>Store Details</h2>
+            <div class="form-group">
+                <label>Store Name</label>
+                <input type="text" id="storeName" required>
+            </div>
+            <div class="form-group">
+                <label>Street</label>
+                <input type="text" id="street" required>
+            </div>
+            <div class="form-group">
+                <label>Pin Code</label>
+                <input type="text" id="pinCode" required>
+            </div>
+            <div class="form-group">
+                <label>State</label>
+                <select id="state" required></select>
+            </div>
+            <div class="buttons">
+                <button class="next-btn" onclick="nextPage(5)">Next</button>
+            </div>
+        </div>
+
+        <!-- Page 6: Store Settings -->
+        <div class="form-page" id="page6">
+            <h2 class="heading"><i class="fas fa-cog icon"></i>Store Settings</h2>
+            <div class="form-group">
+                <label>Number of Products</label>
+                <select id="numberOfProducts">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Price Range</label>
+                <select id="priceRange">
+                    <option value="100-500">100-500</option>
+                    <option value="300-800">300-800</option>
+                    <option value="500-1500">500-1500</option>
+                    <option value="500-3000">500-3000</option>
+                </select>
+            </div>
+            <div class="buttons">
+                <button class="back-btn" onclick="prevPage(6)">Back</button>
+                <button class="submit-btn" onclick="submitStoreDetails()">Submit</button>
+            </div>
+        </div>
+    </div>
+    <div class="form-page" id="page7">
+    </div>
+ <script src="./js/registration.js"></script>
+</body>
+</html>
