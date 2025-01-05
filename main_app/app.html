@@ -13,49 +13,137 @@
         <button class="help-btn" onclick="showPage('help')">Help</button>
       </header>
 
-      <!-- Store Page -->
       <main class="content">
+        <!-- Store Page -->
         <section id="storePage" class="page active">
           <div class="card">
             <div class="payment-count">Today Collection: - 5 Payments</div>
             <div class="total-amount">₹9100</div>
             <div id="todayPayments" class="payment-list"></div>
           </div>
+          <div class="card">
+            <h3>Product Details</h3>
+            <div id="productDetails" class="product-list"></div>
+          </div>
         </section>
 
+        <!-- Edit Product Modal -->
+        <div id="editProductModal" class="modal">
+          <div class="modal-content">
+            <h3>Edit Product</h3>
+            <form>
+              <input type="hidden" id="editProductId">
+              <label for="editProductName">Name:</label>
+              <input type="text" id="editProductName" name="editProductName" required>
+              <label for="editProductPrice">Price:</label>
+              <input type="number" id="editProductPrice" name="editProductPrice" required>
+              <label for="editPrimaryImage">Primary Image:</label>
+              <input type="text" id="editPrimaryImage" name="editPrimaryImage" required>
+              <label for="editOtherImages">Other Images:</label>
+              <input type="text" id="editOtherImages" name="editOtherImages">
+              <label for="editProductStatus">Status:</label>
+              <select id="editProductStatus" name="editProductStatus" required>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+              <div class="form-buttons">
+                <button type="button" class="update-btn" onclick="updateProductDetails()">Update</button>
+                <button type="button" class="back-btn" onclick="cancelEdit()">Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Loader -->
+        <div id="loader" class="loader"></div>
+
         <!-- QR Page -->
-        <section id="qrPage" class="page">
+        <section id="qrPage" class="page hidden">
           <div class="card qr-container">
             <h3>Store Name</h3>
-            <img src="../list mockup.png" alt="QR Code" class="qr-code" />
+            <img id="qrCodeImage" src="" alt="QR Code" class="qr-code" />
             <button onclick="downloadQR()" class="download-btn">
               Download QR
             </button>
           </div>
         </section>
+
         <!-- Account Page -->
-        <section id="accountPage" class="page">
+        <section id="accountPage" class="page hidden">
           <div class="card store-details">
-            <div class="row">
+            <div class="row" onclick="toggleSection('personalDetailsSection')">
               <span>Personal Details</span>
               <button class="edit-btn" onclick="showEditForm('personalDetailsForm')">Edit</button>
             </div>
-            <div class="row">
+            <div id="personalDetailsSection" class="details hidden">
+              <p>Name: <span id="personalName"></span></p>
+              <p>Phone: <span id="personalPhone"></span></p>
+              <p>DOB: <span id="personalDOB"></span></p>
+            </div>
+            <div class="row" onclick="toggleSection('storeDetailsSection')">
               <span>Store Details</span>
               <button class="edit-btn" onclick="showEditForm('storeDetailsForm')">Edit</button>
             </div>
-            <div class="row">
+            <div id="storeDetailsSection" class="details hidden">
+              <p>Store Name: <span id="storeName"></span></p>
+              <p>Store Address: <span id="storeAddress"></span></p>
+            </div>
+            <div class="row" onclick="toggleSection('bankDetailsSection')">
               <span>Bank Details</span>
               <button class="edit-btn" onclick="showEditForm('bankDetailsForm')">Edit</button>
             </div>
+            <div id="bankDetailsSection" class="details hidden">
+              <p>Bank Name: <span id="bankName"></span></p>
+              <p>Bank Number: <span id="bankNumber"></span></p>
+              <p>IFSC Code: <span id="ifscCode"></span></p>
+            </div>
             <div class="row">
               <span>Product List</span>
-              <button class="edit-btn" onclick="showEditForm('productListForm')">Edit</button>
+              <button class="edit-btn" onclick="showPage('productListForm')">Edit</button>
             </div>
           </div>
         </section>
+
+        <!-- Personal Details Page -->
+        <section id="personalDetailsPage" class="page hidden">
+          <div class="card">
+            <h3>Personal Details</h3>
+            <div class="details">
+              <p>Name: <span id="personalName"></span></p>
+              <p>Phone: <span id="personalPhone"></span></p>
+              <p>DOB: <span id="personalDOB"></span></p>
+            </div>
+            <button class="edit-btn" onclick="showEditForm('personalDetailsForm')">Edit</button>
+          </div>
+        </section>
+
+        <!-- Store Details Page -->
+        <section id="storeDetailsPage" class="page hidden">
+          <div class="card">
+            <h3>Store Details</h3>
+            <div class="details">
+              <p>Store Name: <span id="storeName"></span></p>
+              <p>Store Address: <span id="storeAddress"></span></p>
+            </div>
+            <button class="edit-btn" onclick="showEditForm('storeDetailsForm')">Edit</button>
+          </div>
+        </section>
+
+        <!-- Bank Details Page -->
+        <section id="bankDetailsPage" class="page hidden">
+          <div class="card">
+            <h3>Bank Details</h3>
+            <div class="details">
+              <p>Bank Name: <span id="bankName"></span></p>
+              <p>Bank Number: <span id="bankNumber"></span></p>
+              <p>IFSC Code: <span id="ifscCode"></span></p>
+            </div>
+            <button class="edit-btn" onclick="showEditForm('bankDetailsForm')">Edit</button>
+          </div>
+        </section>
+
         <!-- History Page -->
-        <section id="historyPage" class="page">
+        <section id="historyPage" class="page hidden">
           <div class="tab-container">
             <div class="tab active" onclick="switchTab('transactions')">
               Transactions
@@ -100,7 +188,7 @@
         </section>
 
         <!-- Help Page -->
-        <section id="helpPage" class="page">
+        <section id="helpPage" class="page hidden">
           <div class="card">
             <h3>Help & Support</h3>
             <div class="qa-section">
@@ -129,6 +217,14 @@
           </div>
         </section>
 
+        <!-- Product Listing Page -->
+        <section id="productListingPage" class="page hidden">
+          <div class="card">
+            <h3>Product Listing</h3>
+            <div id="productList" class="product-list"></div>
+          </div>
+        </section>
+
         <!-- Edit Forms -->
         <section id="personalDetailsForm" class="page hidden">
           <div class="card">
@@ -144,8 +240,10 @@
               <input type="text" id="aadhar" name="aadhar" />
               <label for="pan">PAN:</label>
               <input type="text" id="pan" name="pan" />
-              <button type="button" class="download-btn" onclick="updateDetails('personalDetailsForm')">Update</button>
-              <button type="button" class="download-btn" onclick="showPage('account')">Back</button>
+              <div class="form-buttons">
+                <button type="button" class="update-btn" onclick="updateDetails('personalDetailsForm')">Update</button>
+                <button type="button" class="back-btn" onclick="showPage('account')">Cancel</button>
+              </div>
             </form>
           </div>
         </section>
@@ -162,8 +260,12 @@
               <input type="number" id="numberOfProducts" name="numberOfProducts" required />
               <label for="priceRange">Price Range:</label>
               <input type="text" id="priceRange" name="priceRange" required />
-              <button type="button" class="download-btn" onclick="updateDetails('storeDetailsForm')">Update</button>
-              <button type="button" class="download-btn" onclick="showPage('account')">Back</button>
+              <label for="storeAddress">Store Address:</label>
+              <input type="text" id="storeAddress" name="storeAddress" required />
+              <div class="form-buttons">
+                <button type="button" class="update-btn" onclick="updateDetails('storeDetailsForm')">Update</button>
+                <button type="button" class="back-btn" onclick="showPage('account')">Cancel</button>
+              </div>
             </form>
           </div>
         </section>
@@ -178,32 +280,18 @@
               <input type="text" id="accountNumber" name="accountNumber" required />
               <label for="ifscCode">IFSC Code:</label>
               <input type="text" id="ifscCode" name="ifscCode" required />
-              <button type="button" class="download-btn" onclick="updateDetails('bankDetailsForm')">Update</button>
-              <button type="button" class="download-btn" onclick="showPage('account')">Back</button>
+              <div class="form-buttons">
+                <button type="button" class="update-btn" onclick="updateDetails('bankDetailsForm')">Update</button>
+                <button type="button" class="back-btn" onclick="showPage('account')">Cancel</button>
+              </div>
             </form>
           </div>
         </section>
 
         <section id="productListForm" class="page hidden">
           <div class="card">
-            <h3>Edit Product List</h3>
-            <form>
-              <label for="productName">Product Name:</label>
-              <input type="text" id="productName" name="productName" required />
-              <label for="price">Price:</label>
-              <input type="number" id="price" name="price" required />
-              <label for="primaryImage">Primary Image URL:</label>
-              <input type="text" id="primaryImage" name="primaryImage" required />
-              <label for="otherImages">Other Images URLs (comma separated):</label>
-              <input type="text" id="otherImages" name="otherImages" />
-              <label for="productStatus">Product Status:</label>
-              <select id="productStatus" name="productStatus" required>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-              <button type="button" class="download-btn" onclick="updateDetails('productListForm')">Update</button>
-              <button type="button" class="download-btn" onclick="showPage('account')">Back</button>
-            </form>
+            <h3>Product List</h3>
+            <div id="productList" class="product-list"></div>
           </div>
         </section>
       </main>
@@ -213,6 +301,7 @@
         <a href="#" class="nav-item" onclick="showPage('qr')">QR</a>
         <a href="#" class="nav-item" onclick="showPage('account')">Account</a>
         <a href="#" class="nav-item" onclick="showPage('history')">History</a>
+        <a href="#" class="nav-item" onclick="showPage('productListingPage')">Products</a>
       </nav>
     </div>
   <script src="./js/app.js"></script>

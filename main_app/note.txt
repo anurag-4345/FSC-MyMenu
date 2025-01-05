@@ -1,0 +1,6 @@
+1: Change first screen as order screen 
+    1.1 on tap of order customer details or Product details visible 
+    1.2 order status change button
+2: implement the razaor pay transtions
+3: Add a API for settlement 
+4: Add product create screen 
